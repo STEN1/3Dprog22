@@ -18,7 +18,23 @@ PathfindingNPC::PathfindingNPC(Scene& scene, const glm::mat4& transform, const g
 
 void PathfindingNPC::Update(float deltaTime)
 {
+	if (m_Stunned)
+	{
+		m_StunTimer += deltaTime;
+		if (m_StunTimer > 2.f)
+			m_Stunned = false;
+		return;
+	}
 	MoveToTarget(deltaTime);
+}
+
+void PathfindingNPC::BeginOverlap(GameObject* other)
+{
+	if (other->GetName() == "Explosion" && m_Stunned == false)
+	{
+		m_Stunned = true;
+		m_StunTimer = 0.f;
+	}
 }
 
 void PathfindingNPC::MoveToTarget(float deltaTime)

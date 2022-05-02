@@ -82,19 +82,19 @@ Mesh::Mesh(GameObject& parent, const std::string& mesh, uint32_t texture, const 
 
 Mesh::~Mesh()
 {
-    s_meshCacheCounter[m_VAO] -= 1;
-    if (s_meshCacheCounter[m_VAO] == 0)
-    {
-        for (auto& [key, val] : s_meshCache)
-        {
-            if (val.VAO == m_VAO)
-            {
-                s_meshCache.erase(key);
-                glDeleteVertexArrays(1, &m_VAO);
-                break;
-            }
-        }
-    }
+    //s_meshCacheCounter[m_VAO] -= 1;
+    //if (s_meshCacheCounter[m_VAO] == 0)
+    //{
+    //    for (auto& [key, val] : s_meshCache)
+    //    {
+    //        if (val.VAO == m_VAO)
+    //        {
+    //            s_meshCache.erase(key);
+    //            glDeleteVertexArrays(1, &m_VAO);
+    //            //break;
+    //        }
+    //    }
+    //}
 }
 
 void Mesh::Draw()

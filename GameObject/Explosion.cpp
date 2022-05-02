@@ -21,8 +21,8 @@ Explosion::Explosion(Scene& scene, const glm::mat4& transform)
 
 void Explosion::Update(float deltaTime)
 {
-	m_CollisionSphere->radius += deltaTime * 2.f;
-	m_lightRange = 100.f * m_CollisionSphere->radius;
+	m_CollisionSphere->radius += deltaTime * 20.f;
+	m_lightRange = m_CollisionSphere->radius * 20.f;
 	auto scaleMat = glm::scale(glm::vec3(m_CollisionSphere->radius));
 	m_vo->SetLocalTransform(scaleMat);
 	m_Lifetime += deltaTime;

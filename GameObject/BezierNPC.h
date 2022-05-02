@@ -10,5 +10,5 @@ public:
 private:
 	std::unique_ptr<class Mesh> m_NPCMesh;
 	float m_DropTimer{};
-	float m_DropInterval{ 1.f };
+	float m_DropInterval{ 2.f };
 };
