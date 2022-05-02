@@ -89,13 +89,22 @@ public:
     void InitPointLightUniforms();
     void UpdatePointLights(const std::vector<PointLight>& lights);
     std::shared_ptr<SSBOManager> m_ssboManager;
+    enum class EditorMode
+    {
+        Play = 0,
+        Debug
+    };
+    EditorMode GetEditorMode() const { return m_EditorMode; }
 private:
-
+    void DebugUpdate(float deltaTime);
+    float m_DebugCameraSpeed = 20.f;
+    EditorMode m_EditorMode = EditorMode::Play;
     std::unordered_map<std::string, Shader> m_shaders;
     std::unordered_map<std::string, uint32_t> m_textureMap;
     std::unique_ptr<Scene> m_scene;
     std::unique_ptr<Scene> m_nextScene;
     std::shared_ptr<Camera> m_camera;
+    std::shared_ptr<Camera> m_debugCamera;
     QCursor m_cursor{};
     class ALCcontext* alContext;
 protected:
@@ -112,8 +121,10 @@ public:
     void GUI_WoodsScene();
     void GUI_WorldScene();
     void GUI_HeightmapScene();
+    void GUI_EksamenScene();
     void GUI_DrawMode();
     void GUI_DebugLines();
+    void GUI_PlayDebug();
 private:
     uint32_t drawMode{ 0 };
 };

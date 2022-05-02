@@ -20,6 +20,7 @@
 #include "GameObject/Sky.h"
 #include "GameObject/Sun.h"
 #include "GameObject/TextBillboard.h"
+#include "GameObject/CameraMesh.h"
 
 
 Scene::Scene()
@@ -38,6 +39,8 @@ Scene::Scene()
 	m_renderWindow = RenderWindow::Get();
     m_camera = m_renderWindow->GetCamera();
     m_ViewFrustum = std::make_unique<Frustum>(m_camera);
+    m_CameraMesh = std::make_unique<CameraMesh>(*this);
+    
 
     m_Player = static_cast<Player*>(m_gameObjects.emplace_back(new Player(*this, m_camera)));
     m_startSound = std::make_shared<SoundSource>(*m_Player, "BabyElephantWalk60.wav");
@@ -98,8 +101,9 @@ void Scene::Update(float deltaTime)
 
 void Scene::Render()
 {
-    m_ViewFrustum->UpdateFrustum();
     auto camera = RenderWindow::Get()->GetCamera();
+    m_ViewFrustum->SetCamera(RenderWindow::Get()->GetCamera());
+    m_ViewFrustum->UpdateFrustum();
     std::vector<PointLight> lights;
     static const float maxLightDistance2 = m_maxLightDistance * m_maxLightDistance;
     for (auto [go, light] : m_pointLights)
@@ -135,6 +139,10 @@ void Scene::Render()
         if (m_ViewFrustum->Intersect(go->m_physicsShape.get()))
             go->Draw();
     }
+
+    if (m_CameraMesh)
+        if (RenderWindow::Get()->GetEditorMode() == RenderWindow::EditorMode::Debug)
+            m_CameraMesh->Draw();
 
     ShaderManager::GetShaderRef("instancedlight").Use();
     for (auto& [path, instanceData] : StaticMesh::s_InstanceDataMap)
@@ -519,4 +527,3 @@ void Scene::ToggleDebugLines()
 {
     m_DrawDebugLines = !m_DrawDebugLines;
 }
-

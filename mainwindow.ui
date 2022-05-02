@@ -642,6 +642,32 @@
       <string>DebugLines</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="PlayDebug">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>80</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Play/Debug</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="EksamenScene">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>470</y>
+       <width>101</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>EksamenScene</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <action name="fileExit">

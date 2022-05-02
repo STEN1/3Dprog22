@@ -157,6 +157,12 @@
     <ClCompile Include="GameObject\Sun.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\EksamenScene.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\CameraMesh.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject\AnimatedBezier.h">
@@ -493,6 +499,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\Sun.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\EksamenScene.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\CameraMesh.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

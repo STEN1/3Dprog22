@@ -88,6 +88,7 @@ public:
 	Frustum(std::weak_ptr<Camera> camera);
 	virtual bool Intersect(PhysicsShape* shape) override;
 	void UpdateFrustum();
+	void SetCamera(std::weak_ptr<Camera> camera);
 private:
 	std::weak_ptr<Camera> m_Camera;
 	Plane Faces[6]; // near left right bottom top far.

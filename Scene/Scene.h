@@ -12,6 +12,7 @@ class Octree;
 class Camera;
 class Scene
 {
+	friend class CameraMesh;
 public:
 	Scene();
 	virtual ~Scene();
@@ -52,6 +53,7 @@ protected:
 	std::unique_ptr<class Sky> m_skybox;
 	std::unique_ptr<class Sun> m_Sun;
 	std::unique_ptr<class TextBillboard> m_testBillboard;
+	std::unique_ptr<class CameraMesh> m_CameraMesh;
 	class Player* m_Player{ nullptr };
 private:
 	glm::vec3 m_SunDirection;

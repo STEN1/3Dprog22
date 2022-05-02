@@ -142,3 +142,15 @@ void MainWindow::on_DebugLines_released()
     mRenderWindow->GUI_DebugLines();
 }
 
+
+void MainWindow::on_PlayDebug_released()
+{
+    mRenderWindow->GUI_PlayDebug();
+}
+
+
+void MainWindow::on_EksamenScene_released()
+{
+    mRenderWindow->GUI_EksamenScene();
+}
+

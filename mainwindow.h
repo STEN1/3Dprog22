@@ -40,6 +40,10 @@ private slots:
 
     void on_DebugLines_released();
 
+    void on_PlayDebug_released();
+
+    void on_EksamenScene_released();
+
 private:
     ///called from the constructor. Initializes different parts of the program.
     void init();

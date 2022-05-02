@@ -43,6 +43,7 @@ SOURCES += main.cpp \
     Core/TextureManager.cpp \
     Core/Utils.cpp \
     GameObject/AnimatedBezier.cpp \
+    GameObject/CameraMesh.cpp \
     GameObject/Door.cpp \
     GameObject/GameObject.cpp \
     GameObject/GraphNPC.cpp \
@@ -52,6 +53,7 @@ SOURCES += main.cpp \
     GameObject/Sun.cpp \
     GameObject/Terrain.cpp \
     GameObject/TextBillboard.cpp \
+    Scene/EksamenScene.cpp \
     Scene/HeightmapScene.cpp \
     Scene/HouseScene.cpp \
     Scene/Scene.cpp \
@@ -95,6 +97,7 @@ HEADERS += \
     Core/Threadpool/thread_pool.hpp \
     Core/Utils.h \
     GameObject/AnimatedBezier.h \
+    GameObject/CameraMesh.h \
     GameObject/Door.h \
     GameObject/GameObject.h \
     GameObject/GraphNPC.h \
@@ -105,6 +108,7 @@ HEADERS += \
     GameObject/Sun.h \
     GameObject/Terrain.h \
     GameObject/TextBillboard.h \
+    Scene/EksamenScene.h \
     Scene/HeightmapScene.h \
     Scene/HouseScene.h \
     Scene/Scene.h \

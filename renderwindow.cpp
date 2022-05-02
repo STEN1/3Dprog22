@@ -23,6 +23,7 @@
 #include "Scene/HouseScene.h"
 #include "Scene/HeightmapScene.h"
 #include "Scene/WorldScene.h"
+#include "Scene/EksamenScene.h"
 #include "Core/SoundManager.h"
 
 #include "stb_image/stb_image.h"
@@ -111,8 +112,14 @@ void RenderWindow::init()
         static_cast<GLint>(width() * retinaScale),
         static_cast<GLint>(height() * retinaScale),
         Camera::Projection::Perspective);
+
+    m_debugCamera = std::make_shared<Camera>(
+        static_cast<GLint>(width() * retinaScale),
+        static_cast<GLint>(height() * retinaScale),
+        Camera::Projection::Perspective);
+    m_debugCamera->SetPosition({ 150.f, 10.f, 150.f });
   
-    LoadScene<WoodsScene>();
+    LoadScene<EksamenScene>();
     auto& lightShader = LoadShader("light");
     auto& landscapeShader = LoadShader("landscape");
     auto& instancedLightShader = LoadShader("instancedlight");
@@ -153,10 +160,17 @@ void RenderWindow::render()
 
     if (m_scene)
     {
-        m_scene->Simulate(deltaTime);
-        m_scene->Update(deltaTime);
+        if (m_EditorMode == EditorMode::Play)
+        {
+            m_scene->Simulate(deltaTime);
+            m_scene->Update(deltaTime);
+        }
+        else if (m_EditorMode == EditorMode::Debug)
+        {
+            DebugUpdate(deltaTime);
+        }
         // give all shaders the view and projection matrix
-        if (auto camera = m_camera.get())
+        if (auto camera = GetCamera())
         {
             for (auto& [path, shader] : m_shaders)
             {
@@ -203,7 +217,8 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     const qreal retinaScale = devicePixelRatio();
     //Set viewport width and height to the size of the QWindow we have set up for OpenGL
     glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
-    m_camera.get()->SetViewportSize(static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
+    m_camera->SetViewportSize(static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
+    m_debugCamera->SetViewportSize(static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
     //If the window actually is exposed to the screen we start the main loop
     if (isExposed())
     {
@@ -402,7 +417,10 @@ void RenderWindow::InstancedPresent()
 
 std::shared_ptr<Camera> RenderWindow::GetCamera()
 {
-    return m_camera;
+    if (m_EditorMode == EditorMode::Play)
+        return m_camera;
+    else if (m_EditorMode == EditorMode::Debug)
+        return m_debugCamera;
 }
 
 void RenderWindow::InitPointLightUniforms()
@@ -726,6 +744,70 @@ void RenderWindow::DrawRect(const glm::mat4& transform, const glm::vec4& color)
     glBindVertexArray(0);
 }
 
+void RenderWindow::DebugUpdate(float deltaTime)
+{
+    // Check for input
+    float forwardInput{};
+    float rightInput{};
+    if (Input::Keyboard[Qt::Key_Up] || Input::Keyboard[Qt::Key_W])
+        forwardInput += 1.f;
+    if (Input::Keyboard[Qt::Key_Down] || Input::Keyboard[Qt::Key_S])
+        forwardInput -= 1.f;
+    if (Input::Keyboard[Qt::Key_Right] || Input::Keyboard[Qt::Key_D])
+        rightInput += 1.f;
+    if (Input::Keyboard[Qt::Key_Left] || Input::Keyboard[Qt::Key_A])
+        rightInput -= 1.f;
+
+    // Getting direction to move from camera vectors.
+    auto cameraForward = m_debugCamera->GetCameraForward();
+    auto cameraRight = m_debugCamera->GetCameraRight();
+
+    auto forward = cameraForward * forwardInput;
+    auto right = cameraRight * rightInput;
+
+    auto wishDir = forward + right;
+    if (glm::length(wishDir) > 0.01f)
+    {
+        wishDir = glm::normalize(wishDir);
+        auto scrollY = Input::LastMouseWheelDelta;
+        if (scrollY != 0)
+        {
+            m_DebugCameraSpeed += scrollY / 10.f;
+            m_DebugCameraSpeed = std::clamp<float>(m_DebugCameraSpeed, 10.f, 100.f);
+            LOG("Speed: " + std::to_string(m_DebugCameraSpeed));
+        }
+        auto pos = m_debugCamera->GetPosition() + wishDir * m_DebugCameraSpeed * deltaTime;
+        m_debugCamera->SetPosition(pos);
+    }
+
+    auto [mouseX, mouseY] = Input::MousePos;
+    static auto oldMouseX = mouseX;
+    static auto oldMouseY = mouseY;
+    auto [mouseDx, mouseDy] = Input::MousePosDelta;
+    if (!Input::Mouse[Qt::RightButton])
+    {
+        oldMouseX = mouseX;
+        oldMouseY = mouseY;
+    }
+
+    static float currentRotationX{};
+    static float currentRotationY{ -0.2f };
+    if (Input::Mouse[Qt::RightButton])
+    {
+        currentRotationX += mouseDx / 200.f;
+        currentRotationY += mouseDy / 200.f;
+        currentRotationY = std::clamp<float>(currentRotationY, -glm::half_pi<float>() + 0.2f, glm::half_pi<float>() - 0.2f);
+    }
+
+    auto rotation = glm::rotate(glm::mat4(1.f), currentRotationY, m_debugCamera->GetCameraRight());
+    rotation = glm::rotate(rotation, currentRotationX, glm::vec3(0.f, 1.f, 0.f));
+
+    glm::vec3 target = rotation * glm::vec4{ 0.f, 0.f, -1.f, 1.f };
+    target += m_debugCamera->GetPosition();
+
+    m_debugCamera->SetTarget(target);
+}
+
 void RenderWindow::mousePressEvent(QMouseEvent* event)
 {
     Input::Mouse[event->button()] = true;
@@ -834,6 +916,11 @@ void RenderWindow::GUI_HeightmapScene()
     LoadScene<HeightmapScene>();
 }
 
+void RenderWindow::GUI_EksamenScene()
+{
+    LoadScene<EksamenScene>();
+}
+
 void RenderWindow::GUI_DrawMode()
 {
     auto& lightShader = LoadShader("light");
@@ -871,4 +958,12 @@ void RenderWindow::GUI_DebugLines()
 {
     if (m_scene)
         m_scene->ToggleDebugLines();
+}
+
+void RenderWindow::GUI_PlayDebug()
+{
+    if (m_EditorMode == EditorMode::Play)
+        m_EditorMode = EditorMode::Debug;
+    else if (m_EditorMode == EditorMode::Debug)
+        m_EditorMode = EditorMode::Play;
 }

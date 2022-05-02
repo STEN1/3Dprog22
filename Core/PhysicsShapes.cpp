@@ -246,3 +246,8 @@ void Frustum::UpdateFrustum()
 	Faces[5].pos = camera->m_position + frontMultFar; // far
 	Faces[5].normal = -camera->m_cameraForward;
 }
+
+void Frustum::SetCamera(std::weak_ptr<Camera> camera)
+{
+	m_Camera = camera;
+}

@@ -60,17 +60,17 @@ void Sun::Draw()
 	auto dir = m_scene.GetSunDirection();
 	auto pos = RenderWindow::Get()->GetCamera()->GetPosition() + (-dir) * m_DistanceToSun;
 	//pos = glm::vec4(0.f, 2.f, 0.f, 0.f);
-	//auto color = m_scene.GetSunColor();
-	static float t{};
-	t += 0.01f;
-	auto color = Utils::ColorFromScalar(t);
-	color = glm::normalize(color);
-	m_scene.SetSunColor(color);
+	auto color = m_scene.GetSunColor();
+	//static float t{};
+	//t += 0.01f;
+	//auto color = Utils::ColorFromScalar(t);
+	//color = glm::normalize(color);
+	//m_scene.SetSunColor(color);
 	for (auto& particle : m_SunParticleData)
 	{
 		particle.color = glm::vec4(color, 1.f);
 		particle.worldPos = glm::vec4(pos, 1.f);
-		particle.scale = glm::vec4(5.f + sinf(t));
+		//particle.scale = glm::vec4(5.f + sinf(t));
 	}
 	std::vector<glm::vec4> cameraData = {
 		glm::vec4(RenderWindow::Get()->GetCamera()->GetCameraRight(), 1.f),
