@@ -15,4 +15,6 @@ private:
 	float m_currentRotation{};
 	float m_cameraRadius{ 10.f };
 	float m_JumpForce{ 20.f };
+	bool m_Stunned{ false };
+	bool m_Stuntimer{ 0.f };
 };

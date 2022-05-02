@@ -169,6 +169,7 @@ void RenderWindow::render()
         else if (m_EditorMode == EditorMode::Debug)
         {
             DebugUpdate(deltaTime);
+
         }
         // give all shaders the view and projection matrix
         if (auto camera = GetCamera())
@@ -196,6 +197,19 @@ void RenderWindow::render()
         }
         else { LOG_ERROR("NO CAMERA IN RENDER FUNCTION!"); }
         m_scene->Render();
+        if (m_EditorMode == EditorMode::Debug)
+        {
+            glDisable(GL_DEPTH_TEST);
+            static constexpr glm::vec3 origo{ 0.f, 0.f, 0.f };
+            static constexpr glm::vec3 x{ 1.f, 0.f, 0.f };
+            static constexpr glm::vec3 y{ 0.f, 1.f, 0.f };
+            static constexpr glm::vec3 z{ 0.f, 0.f, 1.f };
+            static constexpr float size = 10.f;
+            DrawLine(origo, x * size, glm::vec4(x, 1.f));
+            DrawLine(origo, y * size, glm::vec4(y, 1.f));
+            DrawLine(origo, z * size, glm::vec4(z, 1.f));
+            glEnable(GL_DEPTH_TEST);
+        }
         Input::LastMouseWheelDelta = 0;
         Input::MousePosDelta = { 0.f, 0.f };
     }
