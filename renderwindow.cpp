@@ -755,6 +755,7 @@ void RenderWindow::DebugUpdate(float deltaTime)
     // Check for input
     float forwardInput{};
     float rightInput{};
+    float upInput{};
     if (Input::Keyboard[Qt::Key_Up] || Input::Keyboard[Qt::Key_W])
         forwardInput += 1.f;
     if (Input::Keyboard[Qt::Key_Down] || Input::Keyboard[Qt::Key_S])
@@ -763,28 +764,22 @@ void RenderWindow::DebugUpdate(float deltaTime)
         rightInput += 1.f;
     if (Input::Keyboard[Qt::Key_Left] || Input::Keyboard[Qt::Key_A])
         rightInput -= 1.f;
+    if (Input::Keyboard[Qt::Key_Q])
+        upInput -= 1.f;
+    if (Input::Keyboard[Qt::Key_E])
+        upInput += 1.f;
+   
 
     // Getting direction to move from camera vectors.
     auto cameraForward = m_debugCamera->GetCameraForward();
     auto cameraRight = m_debugCamera->GetCameraRight();
+    auto worldUp = glm::vec3{ 0.f, 1.f, 0.f };
 
     auto forward = cameraForward * forwardInput;
     auto right = cameraRight * rightInput;
+    auto up = worldUp * upInput;
 
-    auto wishDir = forward + right;
-    if (glm::length(wishDir) > 0.01f)
-    {
-        wishDir = glm::normalize(wishDir);
-        auto scrollY = Input::LastMouseWheelDelta;
-        if (scrollY != 0)
-        {
-            m_DebugCameraSpeed += scrollY / 10.f;
-            m_DebugCameraSpeed = std::clamp<float>(m_DebugCameraSpeed, 10.f, 100.f);
-            LOG("Speed: " + std::to_string(m_DebugCameraSpeed));
-        }
-        auto pos = m_debugCamera->GetPosition() + wishDir * m_DebugCameraSpeed * deltaTime;
-        m_debugCamera->SetPosition(pos);
-    }
+    auto wishDir = forward + right + up;
 
     auto [mouseX, mouseY] = Input::MousePos;
     static auto oldMouseX = mouseX;
@@ -809,8 +804,22 @@ void RenderWindow::DebugUpdate(float deltaTime)
     rotation = glm::rotate(rotation, currentRotationX, glm::vec3(0.f, 1.f, 0.f));
 
     glm::vec3 target = rotation * glm::vec4{ 0.f, 0.f, -1.f, 1.f };
-    target += m_debugCamera->GetPosition();
 
+    if (glm::length(wishDir) > 0.01f)
+    {
+        wishDir = glm::normalize(wishDir);
+        auto scrollY = Input::LastMouseWheelDelta;
+        if (scrollY != 0)
+        {
+            m_DebugCameraSpeed += scrollY / 10.f;
+            m_DebugCameraSpeed = std::clamp<float>(m_DebugCameraSpeed, 20.f, 200.f);
+            LOG("Speed: " + std::to_string(m_DebugCameraSpeed));
+        }
+        auto pos = m_debugCamera->GetPosition() + wishDir * m_DebugCameraSpeed * deltaTime;
+        m_debugCamera->SetPosition(pos);
+    }
+
+    target += m_debugCamera->GetPosition();
     m_debugCamera->SetTarget(target);
 }
 

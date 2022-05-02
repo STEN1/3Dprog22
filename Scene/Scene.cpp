@@ -478,8 +478,8 @@ void Scene::MouseReleased(int mouseButton)
 
 void Scene::KeyPressed(int keyCode)
 {
-    if (keyCode == Qt::Key_Q)
-        m_DrawDebugLines = !m_DrawDebugLines;
+    //if (keyCode == Qt::Key_Q)
+        //m_DrawDebugLines = !m_DrawDebugLines;
 }
 
 void Scene::Move(GameObject* gameObject, const glm::vec3& newPos)

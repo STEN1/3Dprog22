@@ -98,7 +98,7 @@ public:
     EditorMode GetEditorMode() const { return m_EditorMode; }
 private:
     void DebugUpdate(float deltaTime);
-    float m_DebugCameraSpeed = 20.f;
+    float m_DebugCameraSpeed = 80.f;
     EditorMode m_EditorMode = EditorMode::Play;
     std::unordered_map<std::string, Shader> m_shaders;
     std::unordered_map<std::string, uint32_t> m_textureMap;
