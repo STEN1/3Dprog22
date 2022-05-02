@@ -34,6 +34,8 @@ public:
 	void SetSunColor(const glm::vec3& color);
 	void ToggleDebugLines();
 	void Init();
+	template<class T, class... Args>
+	GameObject* SpawnGameObject(Args&&... args);
 protected:
 	inline static float s_currentTime{};
 	class RenderWindow* m_renderWindow;
@@ -69,3 +71,35 @@ private:
 	thread_pool m_ThreadPool;
 	std::unique_ptr<class Frustum> m_ViewFrustum;
 };
+
+template<class T, class ...Args>
+inline GameObject* Scene::SpawnGameObject(Args && ...args)
+{
+	GameObject* go = m_gameObjects.emplace_back(std::forward<Args>(args));
+	if (go->objectType == GameObject::ObjectType::Static)
+	{
+		m_staticGameObjects.push_back(go);
+	}
+	else if (go->objectType == GameObject::ObjectType::Dynamic)
+	{
+		m_dynamicGameObjects.push_back(go);
+		m_octree->Insert(go);
+	}
+	else if (go->objectType == GameObject::ObjectType::Simulated)
+	{
+		m_dynamicGameObjects.push_back(go);
+		m_simulatedGameObjects.push_back(go);
+		m_octree->Insert(go);
+	}
+	if (!go->m_vo)
+		return go;
+	if (go->m_vo->IsTransparent() && go->objectType != GameObject::ObjectType::Static)
+	{
+		m_transparentGameObjects.push_back(go);
+	}
+	else if (!go->m_vo->IsTransparent() && go->objectType != GameObject::ObjectType::Static)
+	{
+		m_opaqueGameObjects.push_back(go);
+	}
+	return go;
+}
