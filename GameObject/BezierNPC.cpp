@@ -3,6 +3,7 @@
 #include "VisualObject/Mesh.h"
 #include "Core/TextureManager.h"
 #include "Core/Globals.h"
+#include "Bomb.h"
 
 BezierNPC::BezierNPC(Scene& scene, const glm::mat4 transform)
     : GameObject(scene, transform)
@@ -43,6 +44,12 @@ void BezierNPC::Update(float deltaTime)
             auto meshTransform = glm::translate(bezier->CalcBezier(t));
             m_NPCMesh->SetLocalTransform(meshTransform);
         }
+    }
+    m_DropTimer += deltaTime;
+    if (m_DropTimer > m_DropInterval)
+    {
+        m_scene.SpawnGameObject<Bomb>(m_scene, m_NPCMesh->GetGlobalTransform());
+        m_DropTimer = 0.f;
     }
 }
 

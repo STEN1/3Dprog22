@@ -6,6 +6,7 @@
 #include "Core/PointLight.h"
 #include "Core/SoundSource.h"
 #include "Core/Threadpool/thread_pool.hpp"
+#include "Core/Octree.h"
 
 class GameObject;
 class Octree;
@@ -32,10 +33,12 @@ public:
 	glm::vec3 GetSunColor();
 	void SetSunDirection(const glm::vec3& dir);
 	void SetSunColor(const glm::vec3& color);
+	void AddLight(GameObject* go, const glm::vec3& color);
 	void ToggleDebugLines();
 	void Init();
 	template<class T, class... Args>
 	GameObject* SpawnGameObject(Args&&... args);
+	float GetHeightFromHeightmap(const glm::vec3& pos);
 protected:
 	inline static float s_currentTime{};
 	class RenderWindow* m_renderWindow;
@@ -75,7 +78,7 @@ private:
 template<class T, class ...Args>
 inline GameObject* Scene::SpawnGameObject(Args && ...args)
 {
-	GameObject* go = m_gameObjects.emplace_back(std::forward<Args>(args));
+	GameObject* go = m_gameObjects.emplace_back(new T(std::forward<Args>(args)...));
 	if (go->objectType == GameObject::ObjectType::Static)
 	{
 		m_staticGameObjects.push_back(go);

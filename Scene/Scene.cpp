@@ -95,8 +95,8 @@ void Scene::Update(float deltaTime)
 
     ResolveOverlapp(FindCollisions2());
 
-    for (auto go : m_dynamicGameObjects)
-        go->Update(deltaTime);
+    for (uint32_t i = 0; i < m_gameObjects.size(); i++)
+        m_gameObjects[i]->Update(deltaTime);
 }
 
 void Scene::Render()
@@ -292,6 +292,11 @@ void Scene::Init()
         m_CameraMesh->Draw();
     Simulate(0.1f);
     Update(0.1f);
+}
+
+float Scene::GetHeightFromHeightmap(const glm::vec3& pos)
+{
+    return m_heightmap->GetHeightFromPos(pos);
 }
 
 
@@ -528,6 +533,15 @@ void Scene::SetSunColor(const glm::vec3& color)
     landscapeShader.SetVec3f(color, "skyColor");
     instancedlightShader.Use();
     instancedlightShader.SetVec3f(color, "skyColor");
+}
+
+void Scene::AddLight(GameObject* go, const glm::vec3& color)
+{
+    PointLight light;
+    light.diffuse = glm::vec4(color, 1.f);
+    light.ambient = glm::vec4(color * 0.1f, 1.f);
+    light.specular = glm::vec4(1.f);
+    m_pointLights[go] = light;
 }
 
 void Scene::ToggleDebugLines()

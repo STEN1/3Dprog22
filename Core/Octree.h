@@ -1,8 +1,8 @@
 #pragma once
-#include "GameObject/GameObject.h"
 #include "PhysicsShapes.h"
 #include <vector>
 
+class GameObject;
 class Octree
 {
 	friend class Scene;

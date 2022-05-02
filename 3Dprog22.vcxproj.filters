@@ -169,6 +169,12 @@
     <ClCompile Include="GameObject\BezierNPC.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\Bomb.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Explosion.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject\AnimatedBezier.h">
@@ -517,6 +523,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\BezierNPC.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Bomb.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Explosion.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
