@@ -119,6 +119,7 @@ void Scene::Render()
         lightSphere.radius = light.lightRange;
         if (!m_ViewFrustum->Intersect(&lightSphere))
             continue;
+        light.constant = 1.f;
         light.linear = 4.5f / lightRange;
         light.quadratic = 75.f / (lightRange * lightRange);
         lights.push_back(light);

@@ -194,6 +194,7 @@
     <ClCompile Include="Core\SSBO.cpp" />
     <ClCompile Include="GameObject\AnimatedBezier.cpp" />
     <ClCompile Include="GameObject\CameraMesh.cpp" />
+    <ClCompile Include="GameObject\RotatingSun.cpp" />
     <ClCompile Include="GameObject\Sky.cpp" />
     <ClCompile Include="GameObject\Sun.cpp" />
     <ClCompile Include="GameObject\TextBillboard.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Core\Threadpool\thread_pool.hpp" />
     <ClInclude Include="GameObject\AnimatedBezier.h" />
     <ClInclude Include="GameObject\CameraMesh.h" />
+    <ClInclude Include="GameObject\RotatingSun.h" />
     <ClInclude Include="GameObject\Sky.h" />
     <ClInclude Include="GameObject\Sun.h" />
     <ClInclude Include="GameObject\TextBillboard.h" />

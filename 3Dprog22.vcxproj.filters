@@ -163,6 +163,9 @@
     <ClCompile Include="GameObject\CameraMesh.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\RotatingSun.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject\AnimatedBezier.h">
@@ -505,6 +508,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\CameraMesh.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\RotatingSun.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
