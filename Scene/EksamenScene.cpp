@@ -4,6 +4,7 @@
 #include "Core/Globals.h"
 #include "GameObject/Player.h"
 #include "GameObject/RotatingSun.h"
+#include "GameObject/BezierNPC.h"
 
 EksamenScene::EksamenScene()
 {
@@ -19,4 +20,6 @@ EksamenScene::EksamenScene()
 	rotatingSunLight.ambient = rotatingSunColor * 0.1f;
 	rotatingSunLight.specular = glm::vec4(1.f);
 	m_pointLights[rotatingSun] = rotatingSunLight;
+	auto bezierNPCTransform = glm::translate(glm::vec3{ 256.f, 20.f, 256.f });
+	auto bezierNpc = m_gameObjects.emplace_back(new BezierNPC(*this, bezierNPCTransform));
 }

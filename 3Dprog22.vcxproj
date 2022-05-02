@@ -193,6 +193,7 @@
     <ClCompile Include="Core\SoundManager.cpp" />
     <ClCompile Include="Core\SSBO.cpp" />
     <ClCompile Include="GameObject\AnimatedBezier.cpp" />
+    <ClCompile Include="GameObject\BezierNPC.cpp" />
     <ClCompile Include="GameObject\CameraMesh.cpp" />
     <ClCompile Include="GameObject\RotatingSun.cpp" />
     <ClCompile Include="GameObject\Sky.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Core\SSBO.h" />
     <ClInclude Include="Core\Threadpool\thread_pool.hpp" />
     <ClInclude Include="GameObject\AnimatedBezier.h" />
+    <ClInclude Include="GameObject\BezierNPC.h" />
     <ClInclude Include="GameObject\CameraMesh.h" />
     <ClInclude Include="GameObject\RotatingSun.h" />
     <ClInclude Include="GameObject\Sky.h" />

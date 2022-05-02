@@ -2,16 +2,11 @@
 #include "Core/ShaderManager.h"
 #include "renderwindow.h"
 
-BezierCurve::BezierCurve(GameObject& parent, const glm::vec4& controlColor, const glm::vec4& curveColor, const glm::mat4& transform)
+BezierCurve::BezierCurve(GameObject& parent, const glm::vec4& controlColor, const glm::vec4& curveColor, const std::vector<glm::vec3>& controlPoints, const glm::mat4& transform)
     : VisualObject(ShaderManager::GetShaderRef("plainshader"), parent, transform)
     , m_curveColor{ curveColor }
     , m_controlColor{ controlColor }
-    , m_controlPoints{
-        {0.f, 0.f, 5.f},
-        {2.5f, 5.f, 0.f},
-        {9.5f, 5.f, 0.f},
-        {16.f, 0.f, -5.f}
-}
+    , m_controlPoints{ controlPoints }
 {
     m_name = "BezierCurve";
     SetT(0.5f);
