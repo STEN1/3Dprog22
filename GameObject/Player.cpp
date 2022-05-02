@@ -140,7 +140,7 @@ void Player::Update(float deltaTime)
 
 void Player::EndOverlap(GameObject* other)
 {
-    if (other->GetName() == "ItemPickup")
+    if (other->GetName() == "ItemPickup" || other->GetName() == "RedTrophy")
     {
         LOG_HIGHLIGHT("SCORE: " + std::to_string(++m_score));
     }

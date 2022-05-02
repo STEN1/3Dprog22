@@ -43,6 +43,7 @@ public:
 	void Destroy();
 	ObjectType objectType{ ObjectType::Static };
 	void SetLightRange(float range) { m_lightRange = range; }
+	bool Solid{ false };
 protected:
 	std::string m_name;
 	std::unique_ptr<VisualObject> m_vo;

@@ -36,9 +36,11 @@ public:
 	void AddLight(GameObject* go, const glm::vec3& color);
 	void ToggleDebugLines();
 	void Init();
+	float GetHeightFromHeightmap(const glm::vec3& pos);
 	template<class T, class... Args>
 	GameObject* SpawnGameObject(Args&&... args);
-	float GetHeightFromHeightmap(const glm::vec3& pos);
+	template<class T>
+	std::vector<T*> GetGameObjectsOfClass();
 protected:
 	inline static float s_currentTime{};
 	class RenderWindow* m_renderWindow;
@@ -105,4 +107,18 @@ inline GameObject* Scene::SpawnGameObject(Args && ...args)
 		m_opaqueGameObjects.push_back(go);
 	}
 	return go;
+}
+
+template<class T>
+inline std::vector<T*> Scene::GetGameObjectsOfClass()
+{
+	std::vector<T*> out;
+	for (auto go : m_gameObjects)
+	{
+		if (T* goOfClass = dynamic_cast<T*>(go))
+		{
+			out.push_back(goOfClass);
+		}
+	}
+	return out;
 }
