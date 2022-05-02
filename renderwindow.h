@@ -70,6 +70,7 @@ public:
     void DrawSphere(const glm::vec3& pos, float r, const glm::vec4& color = glm::vec4(0.f, 1.f, 0.f, 1.f));
     void SubdivideSphere(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, int n, std::vector<glm::vec3>& v);
     std::shared_ptr<Camera> GetCamera();
+    std::shared_ptr<Camera> GetPlayCamera();
     template<typename T>
     void LoadScene();
 
@@ -133,14 +134,7 @@ private:
 template<typename T>
 inline void RenderWindow::LoadScene()
 {
-    if (!m_scene)
-    {
-        m_scene = std::make_unique<T>();
-    }
-    else
-    {
-        m_nextScene = std::make_unique<T>();
-    }
+    m_nextScene = std::make_unique<T>();
 }
 
 #endif // RENDERWINDOW_H

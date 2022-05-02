@@ -37,12 +37,12 @@ Scene::Scene()
     m_skybox = std::make_unique<Sky>(*this);
     m_Sun = std::make_unique<Sun>(*this);
 	m_renderWindow = RenderWindow::Get();
-    m_camera = m_renderWindow->GetCamera();
+    m_camera = m_renderWindow->GetPlayCamera();
     m_ViewFrustum = std::make_unique<Frustum>(m_camera);
     m_CameraMesh = std::make_unique<CameraMesh>(*this);
     
 
-    m_Player = static_cast<Player*>(m_gameObjects.emplace_back(new Player(*this, m_camera)));
+    m_Player = static_cast<Player*>(m_gameObjects.emplace_back(new Player(*this, m_renderWindow->GetPlayCamera())));
     m_startSound = std::make_shared<SoundSource>(*m_Player, "BabyElephantWalk60.wav");
     m_startSound->Play();
     static_cast<AABB*>(m_Player->m_physicsShape.get())->extent *= 2.f;
@@ -285,6 +285,12 @@ void Scene::Init()
             m_opaqueGameObjects.push_back(go);
         }
     }
+    if (m_Player)
+        m_Player->SetPosition(m_PlayerStartPos);
+    if (m_CameraMesh)
+        m_CameraMesh->Draw();
+    Simulate(0.1f);
+    Update(0.1f);
 }
 
 

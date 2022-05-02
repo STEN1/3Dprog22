@@ -33,9 +33,8 @@ public:
 	void SetSunDirection(const glm::vec3& dir);
 	void SetSunColor(const glm::vec3& color);
 	void ToggleDebugLines();
-protected:
-	// must be called at end of child constructors.
 	void Init();
+protected:
 	inline static float s_currentTime{};
 	class RenderWindow* m_renderWindow;
 	std::vector<GameObject*> m_gameObjects;
@@ -55,6 +54,7 @@ protected:
 	std::unique_ptr<class TextBillboard> m_testBillboard;
 	std::unique_ptr<class CameraMesh> m_CameraMesh;
 	class Player* m_Player{ nullptr };
+	glm::vec3 m_PlayerStartPos{0.f};
 private:
 	glm::vec3 m_SunDirection;
 	glm::vec3 m_SunColor;

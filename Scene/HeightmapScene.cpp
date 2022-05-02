@@ -69,9 +69,7 @@ HeightmapScene::HeightmapScene()
         wispLight.specular = wispLight.diffuse;
         m_pointLights[item] = wispLight;
     }
-
-	Init();
-	player->SetPosition({ 500.f, 0.f, 500.f });
+    m_PlayerStartPos = { 500.f, 0.f, 500.f };
 
     auto& lightShader = ShaderManager::GetShaderRef("light");
     auto& landscapeShader = ShaderManager::GetShaderRef("landscape");

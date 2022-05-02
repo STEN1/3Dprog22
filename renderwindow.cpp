@@ -156,6 +156,7 @@ void RenderWindow::render()
     if (m_nextScene)
     {
         m_scene = std::move(m_nextScene);
+        m_scene->Init();
     }
 
     if (m_scene)
@@ -421,6 +422,11 @@ std::shared_ptr<Camera> RenderWindow::GetCamera()
         return m_camera;
     else if (m_EditorMode == EditorMode::Debug)
         return m_debugCamera;
+}
+
+std::shared_ptr<Camera> RenderWindow::GetPlayCamera()
+{
+    return m_camera;
 }
 
 void RenderWindow::InitPointLightUniforms()

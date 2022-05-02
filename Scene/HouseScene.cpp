@@ -62,7 +62,6 @@ HouseScene::HouseScene()
     static_cast<AABB*>(sceneWarp->m_physicsShape.get())->extent *= 15.f;
     sceneWarp->SetPosition({ 17.f, 0.f, 10.f });
 
-    Init();
     LOG("House loaded");
 }
 
