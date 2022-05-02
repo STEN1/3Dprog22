@@ -163,7 +163,6 @@ void RenderWindow::render()
     {
         if (m_EditorMode == EditorMode::Play)
         {
-            m_scene->Simulate(deltaTime);
             m_scene->Update(deltaTime);
         }
         else if (m_EditorMode == EditorMode::Debug)

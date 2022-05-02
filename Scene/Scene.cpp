@@ -64,6 +64,7 @@ void Scene::Simulate(float deltaTime)
     static constexpr float gravity = 9.81f;
     for (auto go : m_simulatedGameObjects)
     {
+        // handle heightmap
         auto pos = go->GetPosition();
         auto minHeight = m_heightmap->GetHeightFromPos(pos);
         auto vel = go->GetVelocity();
@@ -82,6 +83,43 @@ void Scene::Simulate(float deltaTime)
         }
         go->SetPosition(pos);
         go->SetVelocity(vel);
+        // handle walls
+        for (auto overlappingGo : go->m_overlappingGameObjects)
+        {
+            if (!overlappingGo->Solid)
+                continue;
+            // only support aabb aabb interactions for now.
+            AABB* overlappingAABB = dynamic_cast<AABB*>(overlappingGo->m_physicsShape.get());
+            AABB* goAABB = dynamic_cast<AABB*>(go->m_physicsShape.get());
+            if (overlappingAABB == nullptr || goAABB == nullptr)
+                continue;
+            auto toOverlapping = overlappingAABB->pos - goAABB->pos;
+            float xOverlap = overlappingAABB->extent.x + goAABB->extent.x - abs(toOverlapping.x);
+            float zOverlap = overlappingAABB->extent.z + goAABB->extent.z - abs(toOverlapping.z);
+            if (xOverlap < zOverlap)
+            {
+                if (goAABB->pos.x > overlappingAABB->pos.x)
+                {
+                    pos.x += xOverlap;
+                }
+                else // goAABB->pos.x <= overlappingAABB->pos.x
+                {
+                    pos.x -= xOverlap;
+                }
+            }
+            else // xOverlap >= zOverlap
+            {
+                if (goAABB->pos.z > overlappingAABB->pos.z)
+                {
+                    pos.z += zOverlap;
+                }
+                else // goAABB->pos.z <= overlappingAABB->pos.z
+                {
+                    pos.z -= zOverlap;
+                }
+            }
+        }
+        go->SetPosition(pos);
     }
 }
 
@@ -94,6 +132,8 @@ void Scene::Update(float deltaTime)
     //m_octree->ResolveOverlappingGameObjects();
 
     ResolveOverlapp(FindCollisions2());
+
+    Simulate(deltaTime);
 
     for (uint32_t i = 0; i < m_gameObjects.size(); i++)
         m_gameObjects[i]->Update(deltaTime);
@@ -290,7 +330,6 @@ void Scene::Init()
         m_Player->SetPosition(m_PlayerStartPos);
     if (m_CameraMesh)
         m_CameraMesh->Draw();
-    Simulate(0.1f);
     Update(0.1f);
 }
 

@@ -48,7 +48,7 @@ Kube::Kube(GameObject& parent,Shader& shader, uint32_t texture, glm::mat4 transf
     : VisualObject(shader, parent, transform)
     , m_texture{ texture }
 {
-    m_isTransparent = true;
+    m_isTransparent = false;
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
     glGenBuffers(1, &m_VBO);

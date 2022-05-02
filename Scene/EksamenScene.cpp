@@ -8,6 +8,7 @@
 #include "GameObject/RedTrophy.h"
 #include "GameObject/BlueTrophy.h"
 #include "GameObject/PathfindingNPC.h"
+#include "GameObject/SolidWall.h"
 
 EksamenScene::EksamenScene()
 {
@@ -25,6 +26,9 @@ EksamenScene::EksamenScene()
 	m_pointLights[rotatingSun] = rotatingSunLight;
 	auto bezierNPCTransform = glm::translate(glm::vec3{ 256.f, 20.f, 256.f });
 	auto bezierNpc = m_gameObjects.emplace_back(new BezierNPC(*this, bezierNPCTransform));
+	auto wallTransform = glm::translate(glm::vec3{ 200.f, 10.f, 200.f });
+	wallTransform = glm::scale(wallTransform, glm::vec3{ 20.f, 10.f, 1.f });
+	m_gameObjects.emplace_back(new SolidWall(*this, wallTransform));
 	for (uint32_t i = 0; i < m_TrophyCount; i++)
 	{
 		float x = (rand() / (float)RAND_MAX) * 320.f + 90.f;
