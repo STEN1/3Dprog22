@@ -184,6 +184,9 @@
     <ClCompile Include="GameObject\BlueTrophy.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\SolidWall.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject\AnimatedBezier.h">
@@ -547,6 +550,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\BlueTrophy.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\SolidWall.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -77,7 +77,7 @@ void Player::Update(float deltaTime)
         auto forward = cameraForward * forwardInput;
         auto right = cameraRight * rightInput;
 
-        auto wishDir = forward + right;
+        auto wishDir = forward; // + right;
         wishDir = { wishDir.x, 0.f, wishDir.z };
         if (glm::length(wishDir) > 0.01f)
         {
@@ -89,7 +89,7 @@ void Player::Update(float deltaTime)
         }
 
         // Moving in desired direction.
-        AddPositionOffset(wishDir * MoveSpeed * m_cameraRadius * deltaTime);
+        AddPositionOffset(wishDir * MoveSpeed * deltaTime);
 
         // Snapping cube to surface function.
         // Doing this in Scene::Simulate now.
@@ -103,10 +103,11 @@ void Player::Update(float deltaTime)
         static float currentRotationY{ -0.2f };
         if (Input::Mouse[Qt::RightButton])
         {
-            currentRotationX += mouseDx / 200.f;
+            //currentRotationX += mouseDx / 200.f;
             currentRotationY += mouseDy / 200.f;
             currentRotationY = std::clamp<float>(currentRotationY, -glm::half_pi<float>() + 0.2f, glm::half_pi<float>() - 0.2f);
         }
+        currentRotationX -= rightInput * TurnSpeed * deltaTime;
 
         m_cameraRadius -= Input::LastMouseWheelDelta / 8.f;
         m_cameraRadius = std::clamp(m_cameraRadius, 5.f, 5000.f);
@@ -120,6 +121,10 @@ void Player::Update(float deltaTime)
 
         // Move the rotated camera to the player.
         camPosV = camPosV + GetPosition();
+
+        float minCameraY = m_scene.GetHeightFromHeightmap(camPosV) + 1.f;
+        if (minCameraY > camPosV.y)
+            camPosV.y = minCameraY;
 
         camera->SetPosition(camPosV);
         camera->SetTarget(GetPosition());

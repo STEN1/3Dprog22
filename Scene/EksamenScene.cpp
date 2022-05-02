@@ -27,15 +27,15 @@ EksamenScene::EksamenScene()
 	auto bezierNpc = m_gameObjects.emplace_back(new BezierNPC(*this, bezierNPCTransform));
 	for (uint32_t i = 0; i < m_TrophyCount; i++)
 	{
-		float x = (rand() / (float)RAND_MAX) * 400.f + 50.f;
-		float z = (rand() / (float)RAND_MAX) * 400.f + 50.f;
+		float x = (rand() / (float)RAND_MAX) * 320.f + 90.f;
+		float z = (rand() / (float)RAND_MAX) * 320.f + 90.f;
 		float y = m_heightmap->GetHeightFromPos(glm::vec3{ x, 0.f, z }) + 1.f;
 		m_gameObjects.emplace_back(new RedTrophy(*this, glm::translate(glm::vec3{ x, y, z })));
 	}
 	for (uint32_t i = 0; i < m_TrophyCount; i++)
 	{
-		float x = (rand() / (float)RAND_MAX) * 400.f + 50.f;
-		float z = (rand() / (float)RAND_MAX) * 400.f + 50.f;
+		float x = (rand() / (float)RAND_MAX) * 320.f + 90.f;
+		float z = (rand() / (float)RAND_MAX) * 320.f + 90.f;
 		float y = m_heightmap->GetHeightFromPos(glm::vec3{ x, 0.f, z }) + 1.f;
 		m_gameObjects.emplace_back(new BlueTrophy(*this, glm::translate(glm::vec3{ x, y, z })));
 	}

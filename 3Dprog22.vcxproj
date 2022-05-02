@@ -202,6 +202,7 @@
     <ClCompile Include="GameObject\RedTrophy.cpp" />
     <ClCompile Include="GameObject\RotatingSun.cpp" />
     <ClCompile Include="GameObject\Sky.cpp" />
+    <ClCompile Include="GameObject\SolidWall.cpp" />
     <ClCompile Include="GameObject\Sun.cpp" />
     <ClCompile Include="GameObject\TextBillboard.cpp" />
     <ClCompile Include="Scene\EksamenScene.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="GameObject\RedTrophy.h" />
     <ClInclude Include="GameObject\RotatingSun.h" />
     <ClInclude Include="GameObject\Sky.h" />
+    <ClInclude Include="GameObject\SolidWall.h" />
     <ClInclude Include="GameObject\Sun.h" />
     <ClInclude Include="GameObject\TextBillboard.h" />
     <ClInclude Include="Scene\EksamenScene.h" />
