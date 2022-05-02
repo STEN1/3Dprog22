@@ -5,15 +5,16 @@
 #include "Core/TextureManager.h"
 #include "VisualObject/Kube.h"
 #include "Core/Utils.h"
+#include "VisualObject/Mesh.h"
+#include "Core/Globals.h"
 
 Player::Player(Scene& scene, std::shared_ptr<class Camera> camera)
     : GameObject(scene, glm::mat4(1.f))
     , m_camera(camera)
 {
-    m_vo = std::make_unique<Kube>(
-        *this,
-        ShaderManager::GetShaderRef("textured"),
-        TextureManager::GetTexture("Scull.png"));
+    m_vo = std::make_unique<Mesh>(*this,
+        Globals::AssetPath + std::string("Ball.obj"),
+        TextureManager::GetTexture("testtexture2.png"));
     objectType = ObjectType::Simulated;
     m_name = "Player";
 }

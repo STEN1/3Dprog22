@@ -9,7 +9,8 @@ Mesh::Mesh(GameObject& parent, const std::string& mesh, uint32_t texture, const 
     , m_vertexLayout{ VertexLayout::Indexed }
     , m_drawMode{ GL_TRIANGLES }
 {
-    auto it = s_meshCache.find(mesh);
+    auto meshKey = mesh + std::to_string(texture);
+    auto it = s_meshCache.find(meshKey);
     if (it != s_meshCache.end())
     {
         auto& cachedMesh = it->second;
@@ -74,7 +75,7 @@ Mesh::Mesh(GameObject& parent, const std::string& mesh, uint32_t texture, const 
         cachedMesh.VertexCount = 0;
         cachedMesh.Indices = m_indices;
 
-        s_meshCache.insert(std::pair<std::string, Mesh::CachedMesh>(mesh, cachedMesh));
+        s_meshCache.insert(std::pair<std::string, Mesh::CachedMesh>(meshKey, cachedMesh));
         s_meshCacheCounter[m_VAO] += 1;
     }
 }
