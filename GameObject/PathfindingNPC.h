@@ -2,6 +2,31 @@
 
 #include "GameObject.h"
 
+struct Edge;
+struct Node
+{
+	std::list<Edge*> Edges;
+	AABB aabb;
+	bool Visited{ false };
+};
+
+struct Edge
+{
+	Node* To{};
+	Node* From{};
+};
+
+struct Path
+{
+	std::vector<Edge> Edges;
+	float Cost{};
+	Node* GetLastNode() const
+	{
+		return Edges.back().To;
+	}
+	operator float() const { return Cost; }
+};
+
 class PathfindingNPC : public GameObject
 {
 public:
@@ -12,11 +37,15 @@ public:
 	virtual void BeginOverlap(GameObject* other) override;
 	bool GameOver{ false };
 private:
+	class Path m_Path;
 	std::unique_ptr<class Graph> m_Graph;
 	void MoveToTarget(float deltaTime);
 	void UpdateTarget();
+	void UpdatePath();
+	glm::vec3 GetClosestTrophyPos();
 	glm::vec3 m_Target;
-	float m_Speed{ 10.f };
+	glm::vec3 m_PathTargetTrophyPos;
+	float m_Speed{ 25.f };
 	bool m_Stunned{ false };
 	float m_StunTimer{};
 	uint32_t m_Score{};

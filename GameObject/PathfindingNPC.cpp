@@ -7,23 +7,7 @@
 #include "GameObject/Player.h"
 #include "SolidWall.h"
 
-struct Edge;
-struct Node
-{
-	std::list<Edge*> Edges;
-	AABB aabb;
-};
 
-struct Edge
-{
-	Node* To{};
-	Node* From{};
-};
-
-struct Path
-{
-	std::list<Edge> Edges;
-};
 
 class Graph
 {
@@ -118,7 +102,10 @@ public:
 	}
 	Path GetPath(const glm::vec3& start, const glm::vec3& end)
 	{
-
+		Node* startNode = GetClosestNode(start);
+		Node* endNode = GetClosestNode(end);
+		m_LastPath = Dijkstra(startNode, endNode);
+		return m_LastPath;
 	}
 	void DebugDraw()
 	{
@@ -126,29 +113,83 @@ public:
 		glm::vec4 nodeColor{ 1.f, 0.f, 1.f, 1.f };
 		glm::vec4 pathColor{ 0.f, 1.f, 0.f, 1.f };
 		glm::vec4 edgeColor{ 0.f, 0.f, 1.f, 1.f };
-		RenderWindow::Get()->DrawAABB(m_Center, m_Extent, outerColor);
+		//RenderWindow::Get()->DrawAABB(m_Center, m_Extent, outerColor);
+		//for (auto& row : m_Nodes)
+		//{
+		//	for (auto node : row)
+		//	{
+		//		RenderWindow::Get()->DrawAABB(node->aabb.pos, node->aabb.extent, nodeColor);
+		//		for (auto edge : node->Edges)
+		//		{
+		//			RenderWindow::Get()->DrawLine(edge->From->aabb.pos, edge->To->aabb.pos, pathColor);
+		//		}
+		//	}
+		//}
+		for (uint32_t i = 0; i < m_LastPath.Edges.size() - 1; i++)
+		{
+			RenderWindow::Get()->DrawLine(m_LastPath.Edges[i].To->aabb.pos,
+				m_LastPath.Edges[i + 1].To->aabb.pos, pathColor);
+		}
+	}
+private:
+	Node* GetClosestNode(const glm::vec3& pos)
+	{
+		//TODO: make this fast.
+		float dist2{powf(5000.f, 2.f)};
+		Node* closestNode{};
 		for (auto& row : m_Nodes)
 		{
 			for (auto node : row)
 			{
-				RenderWindow::Get()->DrawAABB(node->aabb.pos, node->aabb.extent, nodeColor);
-				for (auto edge : node->Edges)
+				float distPosToNode2 = glm::length2(node->aabb.pos - pos);
+				if (distPosToNode2 < dist2)
 				{
-					RenderWindow::Get()->DrawLine(edge->From->aabb.pos, edge->To->aabb.pos, pathColor);
+					closestNode = node;
+					dist2 = distPosToNode2;
 				}
 			}
 		}
-		for (auto& edge : m_LastPath.Edges)
-		{
-			RenderWindow::Get()->DrawLine(edge.From->aabb.pos, edge.To->aabb.pos, pathColor);
-		}
+		return closestNode;
 	}
-private:
 	Path Dijkstra(Node* start, Node* end)
 	{
+		std::priority_queue<Path, std::vector<Path>, std::greater<Path>> apq;
+		std::vector<Node*> visited;
+		// setup
+		Edge startEdge;
+		startEdge.To = start;
+		Path startPath;
+		startPath.Edges.push_back(startEdge);
+		apq.push(startPath);
 		Path shortestPath;
+		while (!apq.empty()/* && !end->m_besokt*/)
+		{
+			Node* tempNode = apq.top().GetLastNode();
+			if (tempNode == end)
+			{
+				shortestPath = apq.top(); // bare å returnere denne hær egentlig
+				break;
+			}
+			Path tempPath = apq.top();
+			apq.pop();
+			for (auto& edge : tempNode->Edges)
+			{
+				if (!edge->To->Visited)
+				{
+					edge->To->Visited = true;
+					visited.push_back(edge->To);
+					Path newPath = tempPath;
+					float dist = glm::length(edge->To->aabb.pos - tempNode->aabb.pos);
+					newPath.Cost += dist;
+					newPath.Edges.push_back(*edge);
+					apq.push(newPath);
+				}
+			}
+		}
 
-		m_LastPath = shortestPath;
+		for (auto node : visited)
+			node->Visited = false;
+
 		return shortestPath;
 	}
 	glm::vec3 m_Center;
@@ -167,6 +208,8 @@ PathfindingNPC::PathfindingNPC(Scene& scene, const glm::mat4& transform, const g
 		Globals::AssetPath + std::string("SecretObject.obj"),
 		TextureManager::GetTexture("treehouse_door_color.png"));
 	m_name = "PathfindingNPC";
+	m_PathTargetTrophyPos = GetClosestTrophyPos();
+	m_Path = m_Graph->GetPath(GetPosition(), GetClosestTrophyPos());
 	UpdateTarget();
 	glm::vec3 color{ 0.8f, 0.8f, 0.8f };
 	m_scene.AddLight(this, color);
@@ -212,10 +255,21 @@ void PathfindingNPC::BeginOverlap(GameObject* other)
 void PathfindingNPC::MoveToTarget(float deltaTime)
 {
 	glm::vec3 toTarget = m_Target - GetPosition();
+	glm::vec3 toTrophy = m_PathTargetTrophyPos - GetPosition();
 	float distanceToTarget = glm::length(toTarget);
-	if (distanceToTarget < 0.5f)
+	float distanceToTrophy = glm::length(toTrophy);
+	if (distanceToTrophy < 0.5f)
 	{
 		UpdateTarget();
+	}
+	else if (distanceToTarget < 0.5f)
+	{
+		UpdateTarget();
+	}
+	else if (distanceToTrophy < 15.f)
+	{
+		m_Target = m_PathTargetTrophyPos;
+		AddPositionOffset(glm::normalize(toTarget) * deltaTime * m_Speed);
 	}
 	else
 	{
@@ -225,29 +279,37 @@ void PathfindingNPC::MoveToTarget(float deltaTime)
 
 void PathfindingNPC::UpdateTarget()
 {
-	auto targets = m_scene.GetGameObjectsOfClass<BlueTrophy>();
-	if (targets.empty())
+	if (m_Path.Edges.empty())
 	{
-		m_Target = GetPosition();
-		LOG("No more targets. End game!");
-		return;
+		UpdatePath();
+		m_Path.Edges.erase(m_Path.Edges.begin());
 	}
-	BlueTrophy* closest{};
-	float dist2{ powf(5000.f, 2.f) };
-	for (auto target : targets)
+	if (!m_Path.Edges.empty())
 	{
-		auto toTrophy = target->GetPosition() - GetPosition();
-		float distToTrophy2 = glm::length2(toTrophy);
+		m_Target = m_Path.Edges.front().To->aabb.pos;
+		m_Path.Edges.erase(m_Path.Edges.begin());
+	}
+}
+
+void PathfindingNPC::UpdatePath()
+{
+	m_PathTargetTrophyPos = GetClosestTrophyPos();
+	m_Path = m_Graph->GetPath(GetPosition(), m_PathTargetTrophyPos);
+}
+
+glm::vec3 PathfindingNPC::GetClosestTrophyPos()
+{
+	auto trophies = m_scene.GetGameObjectsOfClass<BlueTrophy>();
+	float dist2{ powf(5000.f, 2.f) };
+	glm::vec3 out{ 0.f };
+	for (auto trophy : trophies)
+	{
+		float distToTrophy2 = glm::length2(trophy->GetPosition() - GetPosition());
 		if (distToTrophy2 < dist2)
 		{
 			dist2 = distToTrophy2;
-			closest = target;
+			out = trophy->GetPosition();
 		}
 	}
-	if (closest == nullptr)
-	{
-		m_Target = GetPosition();
-		return;
-	}
-	m_Target = closest->GetPosition();
+	return out;
 }

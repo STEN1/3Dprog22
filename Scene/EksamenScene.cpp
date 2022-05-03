@@ -86,7 +86,8 @@ EksamenScene::EksamenScene()
 			i++;
 		}
 	}
-	auto pathfindingNPCSTransform = glm::translate(glm::vec3{ 50.f, 0.f, 50.f });
+	float pathfinderY = GetHeightFromHeightmap(glm::vec3{ 50.f, 0.f, 50.f });
+	auto pathfindingNPCSTransform = glm::translate(glm::vec3{ 50.f, pathfinderY, 50.f });
 	glm::vec3 pathfindingCenter{ 256.f, 20.f, 256.f };
 	glm::vec3 pathfindingExtents{ 256.f };
 	m_gameObjects.emplace_back(new PathfindingNPC(*this, pathfindingNPCSTransform,
