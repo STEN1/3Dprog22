@@ -21,6 +21,7 @@
 #include "GameObject/Sun.h"
 #include "GameObject/TextBillboard.h"
 #include "GameObject/CameraMesh.h"
+#include "GameObject/PathfindingNPC.h"
 
 
 Scene::Scene()
@@ -262,11 +263,15 @@ void Scene::Render()
             }
         }
 
-        glm::vec4 lightDebugColor = { 1.f, 1.f, 0.f, 1.f };
+        auto pathfinders = GetGameObjectsOfClass<PathfindingNPC>();
+        for (auto pathfinder : pathfinders)
+            pathfinder->DebugDraw();
+
+        /*glm::vec4 lightDebugColor = { 1.f, 1.f, 0.f, 1.f };
         for (auto& light : lights)
         {
             RenderWindow::Get()->DrawSphere(light.position, light.lightRange, lightDebugColor);
-        }
+        }*/
     }
 }
 
@@ -397,27 +402,27 @@ std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions2()
     return outVec;
 }
 
-std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions3()
-{
-    std::vector<Octree*> activeLeafs;
-    m_octree->FindActiveLeafs(activeLeafs);
-    std::vector<std::vector<std::pair<GameObject*, GameObject*>>> outVectors(activeLeafs.size());
-    m_ThreadPool.sleep_duration = 0;
-    m_ThreadPool.paused = false;
-    for (uint32_t i = 0; i < activeLeafs.size(); i++)
-    {
-        m_ThreadPool.push_task(std::bind(&Octree::FindCollisions, activeLeafs[i], std::ref(outVectors[i])));
-    }
-    std::vector<std::pair<GameObject*, GameObject*>> outVec;
-    m_ThreadPool.wait_for_tasks();
-    m_ThreadPool.paused = true;
-    m_ThreadPool.sleep_duration = 1000;
-    for (auto& vec : outVectors)
-    {
-        outVec.insert(outVec.end(), vec.begin(), vec.end());
-    }
-    return outVec;
-}
+//std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions3()
+//{
+//    std::vector<Octree*> activeLeafs;
+//    m_octree->FindActiveLeafs(activeLeafs);
+//    std::vector<std::vector<std::pair<GameObject*, GameObject*>>> outVectors(activeLeafs.size());
+//    m_ThreadPool.sleep_duration = 0;
+//    m_ThreadPool.paused = false;
+//    for (uint32_t i = 0; i < activeLeafs.size(); i++)
+//    {
+//        m_ThreadPool.push_task(std::bind(&Octree::FindCollisions, activeLeafs[i], std::ref(outVectors[i])));
+//    }
+//    std::vector<std::pair<GameObject*, GameObject*>> outVec;
+//    m_ThreadPool.wait_for_tasks();
+//    m_ThreadPool.paused = true;
+//    m_ThreadPool.sleep_duration = 1000;
+//    for (auto& vec : outVectors)
+//    {
+//        outVec.insert(outVec.end(), vec.begin(), vec.end());
+//    }
+//    return outVec;
+//}
 
 void Scene::ResolveOverlapp(const std::vector<std::pair<GameObject*, GameObject*>>& goVec)
 {

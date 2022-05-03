@@ -89,6 +89,10 @@ public:
 	{
 		return m_cameraUp;
 	}
+	glm::vec3 GetTarget() const
+	{
+		return m_target;
+	}
 private:
 	void UpdateViewMatrix() 
 	{ 

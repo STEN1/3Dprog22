@@ -69,13 +69,13 @@ private:
 	glm::vec3 m_SunColor;
 	std::vector<std::pair<GameObject*, GameObject*>> FindCollisions();
 	std::vector<std::pair<GameObject*, GameObject*>> FindCollisions2();
-	std::vector<std::pair<GameObject*, GameObject*>> FindCollisions3();
+	//std::vector<std::pair<GameObject*, GameObject*>> FindCollisions3();
 	void ResolveOverlapp(const std::vector<std::pair<GameObject*, GameObject*>>& goVec);
 	void RemoveDestroyedGameObjects();
 	void RenderQuads();
 	bool m_DrawDebugLines = false;
 	float m_maxLightDistance = 1000.f;
-	thread_pool m_ThreadPool;
+	//thread_pool m_ThreadPool;
 	std::unique_ptr<class Frustum> m_ViewFrustum;
 };
 

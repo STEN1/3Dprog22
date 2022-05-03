@@ -5,10 +5,163 @@
 #include "Core/TextureManager.h"
 #include "BlueTrophy.h"
 #include "GameObject/Player.h"
+#include "SolidWall.h"
+
+struct Edge;
+struct Node
+{
+	std::list<Edge*> Edges;
+	AABB aabb;
+};
+
+struct Edge
+{
+	Node* To{};
+	Node* From{};
+};
+
+struct Path
+{
+	std::list<Edge> Edges;
+};
+
+class Graph
+{
+public:
+	Graph(Scene& scene, const glm::vec3& center, const glm::vec3& extent)
+		: m_Center{center}
+		, m_Extent{extent}
+		, m_Scene{scene}
+	{
+		// assume uniform size extent
+		float minXZ = center.x - extent.x;
+		float maxXZ = center.x + extent.x;
+		int size = 32;
+		float step = extent.x * 2.f / (float)size;
+		// generate nodes
+		m_Nodes.resize(size);
+		for (int z = 0; z < m_Nodes.size(); z++)
+		{
+			m_Nodes[z].resize(size);
+			for (int x = 0; x < m_Nodes[z].size(); x++)
+			{
+				m_Nodes[z][x] = new Node();
+				m_Nodes[z][x]->aabb.extent = glm::vec3(step / 2.f);
+				glm::vec3 pos{ 0.f };
+				pos.x = minXZ + step * (float)x;
+				pos.z = minXZ + step * (float)z;
+				pos.y = 1.f + m_Scene.GetHeightFromHeightmap(pos);
+				m_Nodes[z][x]->aabb.pos = pos;
+			}
+		}
+		// generate edges
+		for (int z = 0; z < m_Nodes.size(); z++)
+		{
+			for (int x = 0; x < m_Nodes[z].size(); x++)
+			{
+				for (int i = -1; i <= 1; i++)
+				{
+					for (int j = -1; j <= 1; j++)
+					{
+						if (i == 0 && j == 0)
+							continue;
+						if ((z + i) >= 0 && (z + i) < m_Nodes.size()
+							&& (x + j) >= 0 && (x + j) < m_Nodes[z].size())
+						{
+							Edge* newEdge = new Edge();
+							newEdge->From = m_Nodes[z][x];
+							newEdge->To = m_Nodes[z + i][x + j];
+							m_Nodes[z][x]->Edges.push_back(newEdge);
+						}
+					}
+				}
+			}
+		}
+		// remove blocked nodes and remove edge from neighbors
+		auto walls = m_Scene.GetGameObjectsOfClass<SolidWall>();
+		for (auto& row : m_Nodes)
+		{
+			for (auto it = row.begin(); it != row.end();)
+			{
+				auto node = (*it);
+				bool itIsValid{ true };
+				for (auto wall : walls)
+				{
+					if (node->aabb.Intersect(wall->GetPhysicsShape()))
+					{
+						// loop through node edges
+						for (auto edge : node->Edges)
+						{
+							// find node in edge->To and erase.
+							for (auto edgeIt = edge->To->Edges.begin();
+								edgeIt != edge->To->Edges.end(); edgeIt++)
+							{
+								if ((*edgeIt)->To == node)
+								{
+									edge->To->Edges.erase(edgeIt);
+									break;
+								}
+
+							}
+						}
+
+						it = row.erase(it);
+						itIsValid = false;
+						delete node;
+						break;
+					}
+				}
+				if (itIsValid)
+					it++;
+			}
+		}
+	}
+	Path GetPath(const glm::vec3& start, const glm::vec3& end)
+	{
+
+	}
+	void DebugDraw()
+	{
+		glm::vec4 outerColor{ 1.f, 1.f, 1.f, 1.f };
+		glm::vec4 nodeColor{ 1.f, 0.f, 1.f, 1.f };
+		glm::vec4 pathColor{ 0.f, 1.f, 0.f, 1.f };
+		glm::vec4 edgeColor{ 0.f, 0.f, 1.f, 1.f };
+		RenderWindow::Get()->DrawAABB(m_Center, m_Extent, outerColor);
+		for (auto& row : m_Nodes)
+		{
+			for (auto node : row)
+			{
+				RenderWindow::Get()->DrawAABB(node->aabb.pos, node->aabb.extent, nodeColor);
+				for (auto edge : node->Edges)
+				{
+					RenderWindow::Get()->DrawLine(edge->From->aabb.pos, edge->To->aabb.pos, pathColor);
+				}
+			}
+		}
+		for (auto& edge : m_LastPath.Edges)
+		{
+			RenderWindow::Get()->DrawLine(edge.From->aabb.pos, edge.To->aabb.pos, pathColor);
+		}
+	}
+private:
+	Path Dijkstra(Node* start, Node* end)
+	{
+		Path shortestPath;
+
+		m_LastPath = shortestPath;
+		return shortestPath;
+	}
+	glm::vec3 m_Center;
+	glm::vec3 m_Extent;
+	Scene& m_Scene;
+	Path m_LastPath;
+	std::vector<std::vector<Node*>> m_Nodes;
+};
 
 PathfindingNPC::PathfindingNPC(Scene& scene, const glm::mat4& transform, const glm::vec3& pathfindingCenter, const glm::vec3& pathfindingExtents)
 	: GameObject(scene, transform)
 {
+	m_Graph = std::make_unique<Graph>(m_scene, pathfindingCenter, pathfindingExtents);
 	objectType = ObjectType::Simulated;
 	m_vo = std::make_unique<Mesh>(*this,
 		Globals::AssetPath + std::string("SecretObject.obj"),
@@ -31,6 +184,11 @@ void PathfindingNPC::Update(float deltaTime)
 		return;
 	}
 	MoveToTarget(deltaTime);
+}
+
+void PathfindingNPC::DebugDraw()
+{
+	m_Graph->DebugDraw();
 }
 
 void PathfindingNPC::BeginOverlap(GameObject* other)

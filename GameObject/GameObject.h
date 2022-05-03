@@ -45,6 +45,7 @@ public:
 	void SetLightRange(float range) { m_lightRange = range; }
 	bool Solid{ false };
 	bool UI{ false };
+	PhysicsShape* GetPhysicsShape() { return m_physicsShape.get(); }
 protected:
 	std::string m_name;
 	std::unique_ptr<VisualObject> m_vo;

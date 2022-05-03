@@ -810,7 +810,7 @@ void RenderWindow::DebugUpdate(float deltaTime)
     {
         currentRotationX += mouseDx / 200.f;
         currentRotationY += mouseDy / 200.f;
-        currentRotationY = std::clamp<float>(currentRotationY, -glm::half_pi<float>() + 0.2f, glm::half_pi<float>() - 0.2f);
+        currentRotationY = std::clamp<float>(currentRotationY, -1.f, 1.f);
     }
 
     auto rotation = glm::rotate(glm::mat4(1.f), currentRotationY, m_debugCamera->GetCameraRight());
@@ -994,4 +994,7 @@ void RenderWindow::GUI_PlayDebug()
         m_EditorMode = EditorMode::Debug;
     else if (m_EditorMode == EditorMode::Debug)
         m_EditorMode = EditorMode::Play;
+
+    m_debugCamera->SetTarget(m_camera->GetTarget());
+    m_debugCamera->SetPosition(m_camera->GetPosition());
 }

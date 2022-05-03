@@ -8,9 +8,11 @@ public:
 	PathfindingNPC(Scene& scene, const glm::mat4& transform, const glm::vec3& pathfindingCenter,
 		const glm::vec3& pathfindingExtents);
 	virtual void Update(float deltaTime) override;
+	void DebugDraw();
 	virtual void BeginOverlap(GameObject* other) override;
 	bool GameOver{ false };
 private:
+	std::unique_ptr<class Graph> m_Graph;
 	void MoveToTarget(float deltaTime);
 	void UpdateTarget();
 	glm::vec3 m_Target;
