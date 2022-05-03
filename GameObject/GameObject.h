@@ -44,6 +44,7 @@ public:
 	ObjectType objectType{ ObjectType::Static };
 	void SetLightRange(float range) { m_lightRange = range; }
 	bool Solid{ false };
+	bool UI{ false };
 protected:
 	std::string m_name;
 	std::unique_ptr<VisualObject> m_vo;
@@ -52,7 +53,7 @@ protected:
 	std::unique_ptr<PhysicsShape> m_physicsShape{};
 	std::vector<GameObject*> m_overlappingGameObjects;
 	Scene& m_scene;
-	float m_lightRange{ 20.f };
+	float m_lightRange{ 50.f };
 	bool m_Grounded{ false };
 };
 

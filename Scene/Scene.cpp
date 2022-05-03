@@ -231,6 +231,10 @@ void Scene::Render()
         m_testBillboard->m_transform = m_testBillboard->m_transform * rotation;
         m_testBillboard->Draw();
     }
+
+    for (auto ui : m_UI)
+        ui->Draw();
+
     RenderWindow::Get()->glEnable(GL_DEPTH_TEST);
 
 
@@ -488,6 +492,10 @@ void Scene::RemoveDestroyedGameObjects()
         it = std::find(m_simulatedGameObjects.begin(), m_simulatedGameObjects.end(), go);
         if (it != m_simulatedGameObjects.end())
             m_simulatedGameObjects.erase(it);
+
+        it = std::find(m_UI.begin(), m_UI.end(), go);
+        if (it != m_UI.end())
+            m_UI.erase(it);
 
         auto lightIt = m_pointLights.find(go);
         if (lightIt != m_pointLights.end())

@@ -7,6 +7,8 @@
 #include "Core/Utils.h"
 #include "VisualObject/Mesh.h"
 #include "Core/Globals.h"
+#include "GameObject/TextBillboard.h"
+#include "PathfindingNPC.h"
 
 Player::Player(Scene& scene, std::shared_ptr<class Camera> camera)
     : GameObject(scene, glm::mat4(1.f))
@@ -17,10 +19,14 @@ Player::Player(Scene& scene, std::shared_ptr<class Camera> camera)
         TextureManager::GetTexture("testtexture2.png"));
     objectType = ObjectType::Simulated;
     m_name = "Player";
+    glm::vec3 color{ 0.8f, 0.8f, 0.8f };
+    m_scene.AddLight(this, color);
 }
 
 void Player::Update(float deltaTime)
 {
+    if (GameOver)
+        return;
     // Check for input
     float forwardInput{};
     float rightInput{};
@@ -89,7 +95,19 @@ void Player::Update(float deltaTime)
         }
 
         // Moving in desired direction.
-        AddPositionOffset(wishDir * MoveSpeed * deltaTime);
+        if (!m_Stunned)
+        {
+            AddPositionOffset(wishDir * MoveSpeed * deltaTime);
+        }
+        else
+        {
+            m_Stuntimer += deltaTime;
+            if (m_Stuntimer > 2.f)
+            {
+                m_Stunned = false;
+                LOG("Free to move!");
+            }
+        }
 
         // Snapping cube to surface function.
         // Doing this in Scene::Simulate now.
@@ -99,7 +117,7 @@ void Player::Update(float deltaTime)
         //SetPosition(glm::vec3(playerPos.x, playerY + yOffset, playerPos.z));
 
         // Getting rotation to use on camera from mouse.
-        static float currentRotationX{};
+        static float currentRotationX{ 1.f };
         static float currentRotationY{ -0.2f };
         if (Input::Mouse[Qt::RightButton])
         {
@@ -148,5 +166,51 @@ void Player::EndOverlap(GameObject* other)
     if (other->GetName() == "ItemPickup" || other->GetName() == "RedTrophy")
     {
         LOG_HIGHLIGHT("SCORE: " + std::to_string(++m_score));
+        if (m_score == 10)
+        {
+            Win();
+        }
     }
+}
+
+void Player::BeginOverlap(GameObject* other)
+{
+    if (other->GetName() == "Explosion")
+    {
+        m_Stuntimer = 0.f;
+        m_Stunned = true;
+        LOG("Stunned! Cant move.");
+    }
+}
+
+void Player::Win()
+{
+    LOG("Won!");
+    PlaceTextInfrontOfPlayer("YOU WON!");
+    GameOver = true;
+    auto pathfinders = m_scene.GetGameObjectsOfClass<PathfindingNPC>();
+    for (auto pathfinder : pathfinders)
+        pathfinder->GameOver = true;
+}
+
+void Player::Lose()
+{
+    LOG("Lost!");
+    PlaceTextInfrontOfPlayer("YOU LOSE!");
+    GameOver = true;
+    auto pathfinders = m_scene.GetGameObjectsOfClass<PathfindingNPC>();
+    for (auto pathfinder : pathfinders)
+        pathfinder->GameOver = true;
+}
+
+void Player::PlaceTextInfrontOfPlayer(const std::string& UPPERCASETEXT)
+{
+    glm::vec3 spawnpos = GetPosition();
+    glm::vec3 forward2D = m_camera->GetCameraForward();
+    forward2D.y = 0.f;
+    forward2D = glm::normalize(forward2D);
+    spawnpos += forward2D * 2.f;
+    auto transform = glm::translate(spawnpos);
+    transform *= Utils::Vec3ToRotationMatrix(-m_camera->GetCameraForward());
+    m_scene.SpawnGameObject<TextBillboard>(m_scene, UPPERCASETEXT, transform);
 }

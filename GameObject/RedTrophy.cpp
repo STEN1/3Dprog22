@@ -9,7 +9,7 @@ RedTrophy::RedTrophy(Scene& scene, const glm::mat4& transform)
 {
 	m_vo = std::make_unique<Mesh>(*this,
 		Globals::AssetPath + std::string("Ball.obj"),
-		TextureManager::GetTexture("Rect.png"));
+		TextureManager::GetTexture("white1x1.png"));
 	m_name = "RedTrophy";
 	objectType = ObjectType::Dynamic;
 	m_physicsShape = std::make_unique<Sphere>();

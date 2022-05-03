@@ -4,6 +4,7 @@
 #include "Core/Globals.h"
 #include "Core/TextureManager.h"
 #include "BlueTrophy.h"
+#include "GameObject/Player.h"
 
 PathfindingNPC::PathfindingNPC(Scene& scene, const glm::mat4& transform, const glm::vec3& pathfindingCenter, const glm::vec3& pathfindingExtents)
 	: GameObject(scene, transform)
@@ -14,10 +15,14 @@ PathfindingNPC::PathfindingNPC(Scene& scene, const glm::mat4& transform, const g
 		TextureManager::GetTexture("treehouse_door_color.png"));
 	m_name = "PathfindingNPC";
 	UpdateTarget();
+	glm::vec3 color{ 0.8f, 0.8f, 0.8f };
+	m_scene.AddLight(this, color);
 }
 
 void PathfindingNPC::Update(float deltaTime)
 {
+	if (GameOver)
+		return;
 	if (m_Stunned)
 	{
 		m_StunTimer += deltaTime;
@@ -34,6 +39,15 @@ void PathfindingNPC::BeginOverlap(GameObject* other)
 	{
 		m_Stunned = true;
 		m_StunTimer = 0.f;
+	}
+	if (other->GetName() == "BlueTrophy")
+	{
+		LOG_HIGHLIGHT("ENEMY SCORE: " + std::to_string(++m_Score));
+		if (m_Score == 10)
+		{
+			auto player = m_scene.GetGameObjectsOfClass<Player>();
+			player[0]->Lose();
+		}
 	}
 }
 

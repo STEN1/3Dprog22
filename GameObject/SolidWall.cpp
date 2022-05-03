@@ -12,7 +12,7 @@ SolidWall::SolidWall(Scene& scene, const glm::mat4 transform)
 	objectType = ObjectType::Dynamic;
 	m_vo = std::make_unique<Mesh>(*this, 
 		Globals::AssetPath + std::string("halfextentcube.obj"),
-		TextureManager::GetTexture("Rect.png"));
+		TextureManager::GetTexture("white1x1.png"));
 	m_name = "SolidWall";
 	aabb = static_cast<AABB*>(m_physicsShape.get());
 	aabb->extent.x = transform[0].x;

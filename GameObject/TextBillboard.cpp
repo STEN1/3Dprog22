@@ -23,6 +23,7 @@ TextBillboard::TextBillboard(Scene& scene, const std::string& text, const glm::m
 	, m_TileSize{ 32 }
 	, m_Text{ text }
 {
+	UI = true;
 	m_vo = std::make_unique<VisualObject>(m_Shader, *this);
 	m_vo->SetTransparent(true);
 	initializeOpenGLFunctions();

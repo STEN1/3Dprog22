@@ -15,7 +15,8 @@ EksamenScene::EksamenScene()
 	m_heightmap = std::make_unique<Terrain>(*this,
 		"EksamenHeightmap.png",
 		"Landscape.png");
-	m_PlayerStartPos = { 256.f, 0.f, 256.f };
+	m_PlayerStartPos = { 436.f, 0.f, 436.f };
+	SetSunColor({ 0.1f, 0.1f, 0.1f });
 	auto sunTransform = glm::translate(glm::vec3{ 256.f, 20.f, 256.f });
 	auto rotatingSun = m_gameObjects.emplace_back(new RotatingSun(*this, sunTransform));
 	PointLight rotatingSunLight;
@@ -29,6 +30,7 @@ EksamenScene::EksamenScene()
 	auto wallTransform = glm::translate(glm::vec3{ 200.f, 10.f, 200.f });
 	wallTransform = glm::scale(wallTransform, glm::vec3{ 20.f, 10.f, 1.f });
 	m_gameObjects.emplace_back(new SolidWall(*this, wallTransform));
+	srand(time(nullptr));
 	for (uint32_t i = 0; i < m_TrophyCount; i++)
 	{
 		float x = (rand() / (float)RAND_MAX) * 320.f + 90.f;

@@ -35,6 +35,7 @@ public:
 	void SetSunColor(const glm::vec3& color);
 	void AddLight(GameObject* go, const glm::vec3& color);
 	void ToggleDebugLines();
+	bool IsDrawingDebugLines() const { return m_DrawDebugLines; }
 	void Init();
 	float GetHeightFromHeightmap(const glm::vec3& pos);
 	template<class T, class... Args>
@@ -45,6 +46,7 @@ protected:
 	inline static float s_currentTime{};
 	class RenderWindow* m_renderWindow;
 	std::vector<GameObject*> m_gameObjects;
+	std::vector<GameObject*> m_UI;
 	std::vector<GameObject*> m_staticGameObjects;
 	std::vector<GameObject*> m_dynamicGameObjects;
 	std::vector<GameObject*> m_simulatedGameObjects;
@@ -81,6 +83,8 @@ template<class T, class ...Args>
 inline GameObject* Scene::SpawnGameObject(Args && ...args)
 {
 	GameObject* go = m_gameObjects.emplace_back(new T(std::forward<Args>(args)...));
+	if (go->UI)
+		m_UI.push_back(go);
 	if (go->objectType == GameObject::ObjectType::Static)
 	{
 		m_staticGameObjects.push_back(go);
