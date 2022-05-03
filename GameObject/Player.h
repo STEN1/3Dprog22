@@ -20,7 +20,7 @@ private:
 	int m_score{};
 	float m_currentRotation{};
 	float m_cameraRadius{ 20.f };
-	float m_JumpForce{ 20.f };
+	float m_JumpForce{ 40.f };
 	bool m_Stunned{ false };
 	float m_Stuntimer{ 0.f };
 };

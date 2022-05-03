@@ -82,8 +82,6 @@ void Scene::Simulate(float deltaTime)
         {
             go->m_Grounded = false;
         }
-        go->SetPosition(pos);
-        go->SetVelocity(vel);
         // handle walls
         for (auto overlappingGo : go->m_overlappingGameObjects)
         {
@@ -97,7 +95,8 @@ void Scene::Simulate(float deltaTime)
             auto toOverlapping = overlappingAABB->pos - goAABB->pos;
             float xOverlap = overlappingAABB->extent.x + goAABB->extent.x - abs(toOverlapping.x);
             float zOverlap = overlappingAABB->extent.z + goAABB->extent.z - abs(toOverlapping.z);
-            if (xOverlap < zOverlap)
+            float yOverlap = overlappingAABB->extent.y + goAABB->extent.y - abs(toOverlapping.y);
+            if (xOverlap < zOverlap && xOverlap < yOverlap)
             {
                 if (goAABB->pos.x > overlappingAABB->pos.x)
                 {
@@ -108,7 +107,7 @@ void Scene::Simulate(float deltaTime)
                     pos.x -= xOverlap;
                 }
             }
-            else // xOverlap >= zOverlap
+            else if (zOverlap < xOverlap && zOverlap < yOverlap)
             {
                 if (goAABB->pos.z > overlappingAABB->pos.z)
                 {
@@ -119,7 +118,21 @@ void Scene::Simulate(float deltaTime)
                     pos.z -= zOverlap;
                 }
             }
+            else
+            {
+                if (goAABB->pos.y > overlappingAABB->pos.y)
+                {
+                    pos.y += yOverlap;
+                    vel.y = -20.f;
+                    go->m_Grounded = true;
+                }
+                else // goAABB->pos.y <= overlappingAABB->pos.y
+                {
+                    pos.y -= yOverlap;
+                }
+            }
         }
+        go->SetVelocity(vel);
         go->SetPosition(pos);
     }
 }

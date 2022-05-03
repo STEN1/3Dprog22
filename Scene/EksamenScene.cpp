@@ -36,7 +36,8 @@ EksamenScene::EksamenScene()
 		auto wallTransform = glm::translate(glm::vec3{ x, y, z });
 		x = (rand() / (float)RAND_MAX) * 80.f + 1.f;
 		z = (rand() / (float)RAND_MAX) * 80.f + 1.f;
-		wallTransform = glm::scale(wallTransform, glm::vec3{ x, 10.f, z });
+		y = (rand() / (float)RAND_MAX) * 200.f + 10.f;
+		wallTransform = glm::scale(wallTransform, glm::vec3{ x, y, z });
 		m_gameObjects.emplace_back(new SolidWall(*this, wallTransform));
 	}
 	auto walls = GetGameObjectsOfClass<SolidWall>();
