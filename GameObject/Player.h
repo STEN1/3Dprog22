@@ -11,8 +11,8 @@ public:
 	void Win();
 	void Lose();
 	int GetScore() { return m_score; }
-	float MoveSpeed{ 25.f };
-	float TurnSpeed{ 2.f };
+	float MoveSpeed{ 40.f };
+	float TurnSpeed{ 3.f };
 	bool GameOver{ false };
 private:
 	void PlaceTextInfrontOfPlayer(const std::string& UPPERCASETEXT);

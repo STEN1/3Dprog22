@@ -266,10 +266,9 @@ void PathfindingNPC::MoveToTarget(float deltaTime)
 	{
 		UpdateTarget();
 	}
-	else if (distanceToTrophy < 15.f)
+	if (m_Path.Edges.empty())
 	{
-		m_Target = m_PathTargetTrophyPos;
-		AddPositionOffset(glm::normalize(toTarget) * deltaTime * m_Speed);
+		AddPositionOffset(glm::normalize(toTrophy) * deltaTime * m_Speed);
 	}
 	else
 	{

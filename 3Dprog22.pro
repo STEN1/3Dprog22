@@ -43,13 +43,21 @@ SOURCES += main.cpp \
     Core/TextureManager.cpp \
     Core/Utils.cpp \
     GameObject/AnimatedBezier.cpp \
+    GameObject/BezierNPC.cpp \
+    GameObject/BlueTrophy.cpp \
+    GameObject/Bomb.cpp \
     GameObject/CameraMesh.cpp \
     GameObject/Door.cpp \
+    GameObject/Explosion.cpp \
     GameObject/GameObject.cpp \
     GameObject/GraphNPC.cpp \
     GameObject/ItemPickup.cpp \
+    GameObject/PathfindingNPC.cpp \
     GameObject/Player.cpp \
+    GameObject/RedTrophy.cpp \
+    GameObject/RotatingSun.cpp \
     GameObject/Sky.cpp \
+    GameObject/SolidWall.cpp \
     GameObject/Sun.cpp \
     GameObject/Terrain.cpp \
     GameObject/TextBillboard.cpp \
@@ -97,14 +105,22 @@ HEADERS += \
     Core/Threadpool/thread_pool.hpp \
     Core/Utils.h \
     GameObject/AnimatedBezier.h \
+    GameObject/BezierNPC.h \
+    GameObject/BlueTrophy.h \
+    GameObject/Bomb.h \
     GameObject/CameraMesh.h \
     GameObject/Door.h \
+    GameObject/Explosion.h \
     GameObject/GameObject.h \
     GameObject/GraphNPC.h \
     GameObject/ItemPickup.h \
+    GameObject/PathfindingNPC.h \
     GameObject/Player.h \
+    GameObject/RedTrophy.h \
+    GameObject/RotatingSun.h \
     GameObject/SceneWarp.h \
     GameObject/Sky.h \
+    GameObject/SolidWall.h \
     GameObject/Sun.h \
     GameObject/Terrain.h \
     GameObject/TextBillboard.h \
