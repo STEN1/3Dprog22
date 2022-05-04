@@ -20,11 +20,12 @@ struct Path
 {
 	std::vector<Edge> Edges;
 	float Cost{};
+	float DistToEnd{};
 	Node* GetLastNode() const
 	{
 		return Edges.back().To;
 	}
-	operator float() const { return Cost; }
+	operator float() const { return Cost + DistToEnd; }
 };
 
 class PathfindingNPC : public GameObject
