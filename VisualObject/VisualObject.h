@@ -1,5 +1,5 @@
 #pragma once
-#include <QOpenGLExtraFunctions>
+#include <QOpenGLFunctions_4_5_Core>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -8,7 +8,7 @@
 #include "shader.h"
 
 class GameObject;
-class VisualObject : protected QOpenGLExtraFunctions
+class VisualObject : protected QOpenGLFunctions_4_5_Core
 {
 public:
 	VisualObject() = delete;

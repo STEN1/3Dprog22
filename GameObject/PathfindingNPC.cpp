@@ -118,18 +118,18 @@ public:
 		glm::vec4 nodeColor{ 1.f, 0.f, 1.f, 1.f };
 		glm::vec4 pathColor{ 0.f, 1.f, 0.f, 1.f };
 		glm::vec4 edgeColor{ 0.f, 0.f, 1.f, 1.f };
-		RenderWindow::Get()->DrawAABB(m_Center, m_Extent, outerColor);
-		for (auto& row : m_Nodes)
-		{
-			for (auto node : row)
-			{
-				RenderWindow::Get()->DrawAABB(node->aabb.pos, node->aabb.extent, nodeColor);
-				for (auto edge : node->Edges)
-				{
-					RenderWindow::Get()->DrawLine(edge->From->aabb.pos, edge->To->aabb.pos, pathColor);
-				}
-			}
-		}
+		//RenderWindow::Get()->DrawAABB(m_Center, m_Extent, outerColor);
+		//for (auto& row : m_Nodes)
+		//{
+		//	for (auto node : row)
+		//	{
+		//		RenderWindow::Get()->DrawAABB(node->aabb.pos, node->aabb.extent, nodeColor);
+		//		for (auto edge : node->Edges)
+		//		{
+		//			RenderWindow::Get()->DrawLine(edge->From->aabb.pos, edge->To->aabb.pos, pathColor);
+		//		}
+		//	}
+		//}
 		for (uint32_t i = 0; i < m_LastPath.Edges.size() - 1; i++)
 		{
 			RenderWindow::Get()->DrawLine(m_LastPath.Edges[i].To->aabb.pos,
