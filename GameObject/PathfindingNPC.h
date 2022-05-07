@@ -46,8 +46,9 @@ private:
 	glm::vec3 GetClosestTrophyPos();
 	glm::vec3 m_Target;
 	glm::vec3 m_PathTargetTrophyPos;
-	float m_Speed{ 25.f };
+	float m_Speed{ 100.f };
 	bool m_Stunned{ false };
 	float m_StunTimer{};
 	uint32_t m_Score{};
+	uint32_t m_MaxScore{};
 };

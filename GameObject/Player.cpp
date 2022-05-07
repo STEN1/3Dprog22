@@ -9,6 +9,7 @@
 #include "Core/Globals.h"
 #include "GameObject/TextBillboard.h"
 #include "PathfindingNPC.h"
+#include "RedTrophy.h"
 
 Player::Player(Scene& scene, std::shared_ptr<class Camera> camera)
     : GameObject(scene, glm::mat4(1.f))
@@ -21,6 +22,8 @@ Player::Player(Scene& scene, std::shared_ptr<class Camera> camera)
     m_name = "Player";
     glm::vec3 color{ 0.8f, 0.8f, 0.8f };
     m_scene.AddLight(this, color);
+    auto targets = m_scene.GetGameObjectsOfClass<RedTrophy>();
+    m_MaxScore = targets.size();
 }
 
 void Player::Update(float deltaTime)
@@ -62,8 +65,8 @@ void Player::Update(float deltaTime)
     auto [mouseX, mouseY] = Input::MousePos;
     static auto oldMouseX = mouseX;
     static auto oldMouseY = mouseY;
-    /*float mouseDx = oldMouseX - mouseX;
-    float mouseDy = oldMouseY - mouseY;*/
+    // float mouseDx = oldMouseX - mouseX;
+    // float mouseDy = oldMouseY - mouseY;
     auto [mouseDx, mouseDy] = Input::MousePosDelta;
     if (Input::Mouse[Qt::RightButton])
     {
@@ -83,7 +86,7 @@ void Player::Update(float deltaTime)
         auto forward = cameraForward * forwardInput;
         auto right = cameraRight * rightInput;
 
-        auto wishDir = forward; // + right;
+        auto wishDir = forward + right;
         wishDir = { wishDir.x, 0.f, wishDir.z };
         if (glm::length(wishDir) > 0.01f)
         {
@@ -121,11 +124,11 @@ void Player::Update(float deltaTime)
         static float currentRotationY{ -0.2f };
         if (Input::Mouse[Qt::RightButton])
         {
-            //currentRotationX += mouseDx / 200.f;
+            currentRotationX += mouseDx / 200.f;
             currentRotationY += mouseDy / 200.f;
             currentRotationY = std::clamp<float>(currentRotationY, -glm::half_pi<float>() + 0.2f, glm::half_pi<float>() - 0.2f);
         }
-        currentRotationX -= rightInput * TurnSpeed * deltaTime;
+        //currentRotationX -= rightInput * TurnSpeed * deltaTime;
 
         m_cameraRadius -= Input::LastMouseWheelDelta / 8.f;
         m_cameraRadius = std::clamp(m_cameraRadius, 5.f, 5000.f);
@@ -166,7 +169,7 @@ void Player::EndOverlap(GameObject* other)
     if (other->GetName() == "ItemPickup" || other->GetName() == "RedTrophy")
     {
         LOG_HIGHLIGHT("SCORE: " + std::to_string(++m_score));
-        if (m_score == 10)
+        if (m_score == m_MaxScore)
         {
             Win();
         }

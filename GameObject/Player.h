@@ -18,6 +18,7 @@ private:
 	void PlaceTextInfrontOfPlayer(const std::string& UPPERCASETEXT);
 	std::shared_ptr<class Camera> m_camera;
 	int m_score{};
+	uint32_t m_MaxScore{};
 	float m_currentRotation{};
 	float m_cameraRadius{ 20.f };
 	float m_JumpForce{ 40.f };

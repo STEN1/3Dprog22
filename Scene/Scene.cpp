@@ -162,9 +162,9 @@ void Scene::Render()
     static const float maxLightDistance2 = m_maxLightDistance * m_maxLightDistance;
     for (auto [go, light] : m_pointLights)
     {
-        auto distanceToCamera2 = glm::length2(go->GetPosition() - camera->GetPosition());
+        /*auto distanceToCamera2 = glm::length2(go->GetPosition() - camera->GetPosition());
         if (distanceToCamera2 > maxLightDistance2)
-            continue;
+            continue;*/
         Sphere lightSphere;
         light.position = glm::vec4(go->GetPosition(), 0.f);
         lightSphere.pos = light.position;

@@ -36,3 +36,13 @@ float Terrain::GetHeightFromPos(const glm::vec3& pos)
 	}
 	return Scene::TerrainFunc(pos.x, pos.z);
 }
+
+float Terrain::GetWidth()
+{
+	return static_cast<Heightmap*>(m_vo.get())->m_width;
+}
+
+float Terrain::GetHeight()
+{
+	return static_cast<Heightmap*>(m_vo.get())->m_height;
+}

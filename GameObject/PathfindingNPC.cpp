@@ -21,8 +21,10 @@ public:
 		// assume uniform size extent
 		float minXZ = center.x - extent.x;
 		float maxXZ = center.x + extent.x;
-		int size = 32;
-		float step = extent.x * 2.f / (float)size;
+		//int size = 32;
+		//float step = extent.x * 2.f / (float)size;
+		float step = 10.f;
+		int size = extent.x * 2.f / step;
 		// generate nodes
 		m_Nodes.resize(size);
 		for (int z = 0; z < m_Nodes.size(); z++)
@@ -33,8 +35,8 @@ public:
 				m_Nodes[z][x] = new Node();
 				m_Nodes[z][x]->aabb.extent = glm::vec3(step / 2.f);
 				glm::vec3 pos{ 0.f };
-				pos.x = minXZ + step * (float)x;
-				pos.z = minXZ + step * (float)z;
+				pos.x = minXZ + step * (float)x + step / 2.f;
+				pos.z = minXZ + step * (float)z + step / 2.f;
 				pos.y = 1.f + m_Scene.GetHeightFromHeightmap(pos);
 				m_Nodes[z][x]->aabb.pos = pos;
 			}
@@ -118,22 +120,30 @@ public:
 		glm::vec4 nodeColor{ 1.f, 0.f, 1.f, 1.f };
 		glm::vec4 pathColor{ 0.f, 1.f, 0.f, 1.f };
 		glm::vec4 edgeColor{ 0.f, 0.f, 1.f, 1.f };
-		//RenderWindow::Get()->DrawAABB(m_Center, m_Extent, outerColor);
-		//for (auto& row : m_Nodes)
-		//{
-		//	for (auto node : row)
-		//	{
-		//		RenderWindow::Get()->DrawAABB(node->aabb.pos, node->aabb.extent, nodeColor);
-		//		for (auto edge : node->Edges)
-		//		{
-		//			RenderWindow::Get()->DrawLine(edge->From->aabb.pos, edge->To->aabb.pos, pathColor);
-		//		}
-		//	}
-		//}
-		for (uint32_t i = 0; i < m_LastPath.Edges.size() - 1; i++)
+		RenderWindow::Get()->DrawAABB(m_Center, m_Extent, outerColor);
+		for (auto visitedNode : m_Visited)
 		{
-			RenderWindow::Get()->DrawLine(m_LastPath.Edges[i].To->aabb.pos,
-				m_LastPath.Edges[i + 1].To->aabb.pos, pathColor);
+			RenderWindow::Get()->DrawAABB(visitedNode->aabb.pos, visitedNode->aabb.extent, outerColor);
+		}
+		for (auto& row : m_Nodes)
+		{
+			for (auto node : row)
+			{
+				RenderWindow::Get()->DrawAABB(node->aabb.pos, node->aabb.extent, nodeColor);
+				for (auto edge : node->Edges)
+				{
+					//RenderWindow::Get()->DrawLine(edge->From->aabb.pos, edge->To->aabb.pos, pathColor);
+				}
+			}
+		}
+		for (uint32_t i = 0; i < m_LastPath.Edges.size() - 1 && m_LastPath.Edges.size() > 1; i++)
+		{
+			float yOffset = m_LastPath.Edges[i].To->aabb.extent.y + 1.f;
+			auto start = m_LastPath.Edges[i].To->aabb.pos;
+			start.y += yOffset;
+			auto end = m_LastPath.Edges[i + 1].To->aabb.pos;
+			end.y += yOffset;
+			RenderWindow::Get()->DrawLine(start, end, pathColor);
 		}
 	}
 private:
@@ -159,7 +169,7 @@ private:
 	Path Dijkstra(Node* start, Node* end)
 	{
 		std::priority_queue<Path, std::vector<Path>, std::greater<Path>> apq;
-		std::vector<Node*> visited;
+		m_Visited.clear();
 		// setup
 		Edge startEdge;
 		startEdge.To = start;
@@ -182,7 +192,7 @@ private:
 				if (!edge->To->Visited)
 				{
 					edge->To->Visited = true;
-					visited.push_back(edge->To);
+					m_Visited.push_back(edge->To);
 					Path newPath = tempPath;
 					float dist = glm::length(edge->To->aabb.pos - tempNode->aabb.pos);
 					newPath.Cost += dist;
@@ -193,7 +203,7 @@ private:
 			}
 		}
 
-		for (auto node : visited)
+		for (auto node : m_Visited)
 			node->Visited = false;
 
 		return shortestPath;
@@ -203,6 +213,7 @@ private:
 	Scene& m_Scene;
 	Path m_LastPath;
 	std::vector<std::vector<Node*>> m_Nodes;
+	std::vector<Node*> m_Visited;
 };
 
 PathfindingNPC::PathfindingNPC(Scene& scene, const glm::mat4& transform, const glm::vec3& pathfindingCenter, const glm::vec3& pathfindingExtents)
@@ -218,7 +229,10 @@ PathfindingNPC::PathfindingNPC(Scene& scene, const glm::mat4& transform, const g
 	m_Path = m_Graph->GetPath(GetPosition(), GetClosestTrophyPos());
 	UpdateTarget();
 	glm::vec3 color{ 0.8f, 0.8f, 0.8f };
+	m_lightRange = 300.f;
 	m_scene.AddLight(this, color);
+	auto targets = m_scene.GetGameObjectsOfClass<BlueTrophy>();
+	m_MaxScore = targets.size();
 }
 
 void PathfindingNPC::Update(float deltaTime)
@@ -250,7 +264,7 @@ void PathfindingNPC::BeginOverlap(GameObject* other)
 	if (other->GetName() == "BlueTrophy")
 	{
 		LOG_HIGHLIGHT("ENEMY SCORE: " + std::to_string(++m_Score));
-		if (m_Score == 10)
+		if (m_Score == m_MaxScore)
 		{
 			auto player = m_scene.GetGameObjectsOfClass<Player>();
 			player[0]->Lose();
@@ -264,21 +278,23 @@ void PathfindingNPC::MoveToTarget(float deltaTime)
 	glm::vec3 toTrophy = m_PathTargetTrophyPos - GetPosition();
 	float distanceToTarget = glm::length(toTarget);
 	float distanceToTrophy = glm::length(toTrophy);
-	if (distanceToTrophy < 0.5f)
+	if (distanceToTrophy < 2.f)
 	{
 		UpdateTarget();
 	}
-	else if (distanceToTarget < 0.5f)
+	else if (distanceToTarget < 2.f)
 	{
 		UpdateTarget();
 	}
 	if (m_Path.Edges.empty())
 	{
-		AddPositionOffset(glm::normalize(toTrophy) * deltaTime * m_Speed);
+		if (glm::length(toTrophy) > 0.01f)
+			AddPositionOffset(glm::normalize(toTrophy) * deltaTime * m_Speed);
 	}
 	else
 	{
-		AddPositionOffset(glm::normalize(toTarget) * deltaTime * m_Speed);
+		if (glm::length(toTarget) > 0.01f)
+			AddPositionOffset(glm::normalize(toTarget) * deltaTime * m_Speed);
 	}
 }
 
@@ -287,7 +303,8 @@ void PathfindingNPC::UpdateTarget()
 	if (m_Path.Edges.empty())
 	{
 		UpdatePath();
-		m_Path.Edges.erase(m_Path.Edges.begin());
+		if (m_Path.Edges.begin() != m_Path.Edges.end())
+			m_Path.Edges.erase(m_Path.Edges.begin());
 	}
 	if (!m_Path.Edges.empty())
 	{
