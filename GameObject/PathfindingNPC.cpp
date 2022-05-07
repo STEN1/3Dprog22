@@ -23,10 +23,11 @@ public:
 		float maxXZ = center.x + extent.x;
 		//int size = 32;
 		//float step = extent.x * 2.f / (float)size;
-		float step = 10.f;
+		float step = 5.f;
 		int size = extent.x * 2.f / step;
 		// generate nodes
 		m_Nodes.resize(size);
+		LOG("Number of nodes: " + std::to_string(size * size));
 		for (int z = 0; z < m_Nodes.size(); z++)
 		{
 			m_Nodes[z].resize(size);
