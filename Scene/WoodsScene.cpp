@@ -198,7 +198,6 @@ WoodsScene::WoodsScene()
         auto go = m_gameObjects.emplace_back(new GameObject(*this, transform));
         go->SetVisualObject(std::make_unique<StaticMesh>(*go, "../3Dprog22/assets/HappyTree.obj", TextureManager::GetTexture("HappyTree.png")));
     }
-    Init();
     
     LOG_WARNING("Woods loaded...");
     LOG_WARNING("Press 1 or 2 to make the NPC follow different graphs.");

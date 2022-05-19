@@ -51,7 +51,7 @@ bool PhysicsShape::Intersect(Sphere* a, Sphere* b)
 {
 	float minDist = a->radius + b->radius;
 	float dist = glm::distance(a->pos, b->pos);
-	return (dist > minDist);
+	return (dist < minDist);
 }
 
 bool PhysicsShape::Intersect(AABB* aabb, Plane* plane)

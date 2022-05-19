@@ -30,6 +30,6 @@ private:
 	std::vector<GameObject*> m_gameObjects;
 	std::vector<Octree*> m_childNodes;
 	AABB m_physicsBox{};
-	uint32_t m_maxObjects{ 30 };
-	float m_minExtent{ 20.f };
+	uint32_t m_maxObjects{ 20 };
+	float m_minExtent{ 5.f };
 };

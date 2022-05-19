@@ -298,7 +298,7 @@ void Octree::FindCollisions(std::vector<std::pair<GameObject*, GameObject*>>& ou
 		return;
 	}
 
-	for (uint32_t i = 0; i < m_gameObjects.size(); i++)
+	for (uint32_t i = 0; i < m_gameObjects.size() - 1; i++)
 	{
 		for (uint32_t j = i + 1; j < m_gameObjects.size(); j++)
 		{
