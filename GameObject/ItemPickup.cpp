@@ -2,6 +2,7 @@
 #include "Core/TextureManager.h"
 #include "VisualObject/Quad.h"
 #include "Core/Utils.h"
+#include "Scene/Scene.h"
 
 ItemPickup::ItemPickup(Scene& scene, glm::mat4 transform)
     : GameObject(scene, transform)

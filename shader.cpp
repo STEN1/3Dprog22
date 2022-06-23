@@ -6,7 +6,7 @@
 
 //#include "GL/glew.h" - using QOpenGLFunctions instead
 
-#include "Core/logger.h" //For our utility Logger class
+#include "Core/Logger.h" //For our utility Logger class
 
 Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {

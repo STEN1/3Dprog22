@@ -4,6 +4,7 @@
 #include "Core/TextureManager.h"
 #include "VisualObject/TriangleSurface.h"
 #include "VisualObject/Heightmap.h"
+#include "Scene/Scene.h"
 
 Terrain::Terrain(Scene& scene)
 	: GameObject(scene, glm::mat4(1.f))

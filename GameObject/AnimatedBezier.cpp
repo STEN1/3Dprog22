@@ -1,5 +1,6 @@
 #include "AnimatedBezier.h"
 #include "VisualObject/BezierCurve.h"
+#include "Scene/Scene.h"
 
 AnimatedBezier::AnimatedBezier(Scene& scene)
     : GameObject(scene, glm::mat4(1.f))

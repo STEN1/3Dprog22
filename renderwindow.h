@@ -10,13 +10,13 @@
 #include "Core/Camera.h"
 #include "VisualObject/VisualObject.h"
 #include <QCursor>
-#include "Scene/Scene.h"
+//#include "Scene/Scene.h"
 #include "Core/PointLight.h"
-#include "Scene/Scene.h"
 #include "Core/SSBO.h"
 
 class QOpenGLContext;
 class Shader;
+class Scene;
 class MainWindow;
 class Mesh;
 

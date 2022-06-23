@@ -2,12 +2,13 @@
 #include "VisualObject/VisualObject.h"
 #include "Core/PhysicsShapes.h"
 #include "renderwindow.h"
-#include "Core/logger.h"
+#include "Core/Logger.h"
 #include "Core/SoundSource.h"
 
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/quaternion.hpp"
 
+class Scene;
 class GameObject
 {
 	friend class Octree;

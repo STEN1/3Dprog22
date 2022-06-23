@@ -7,8 +7,8 @@
 #include "Core/SoundSource.h"
 #include "Core/Threadpool/thread_pool.hpp"
 #include "Core/Octree.h"
+#include "GameObject/GameObject.h"
 
-class GameObject;
 class Octree;
 class Camera;
 class Scene

@@ -2,6 +2,7 @@
 #include "VisualObject/Mesh.h"
 #include "Core/TextureManager.h"
 #include "Core/Globals.h"
+#include "Scene/Scene.h"
 
 Explosion::Explosion(Scene& scene, const glm::mat4& transform)
 	: GameObject(scene, transform)

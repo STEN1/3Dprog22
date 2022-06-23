@@ -3,6 +3,7 @@
 #include "VisualObject/Mesh.h"
 #include "Core/TextureManager.h"
 #include "Core/Globals.h"
+#include "Scene/Scene.h"
 
 RotatingSun::RotatingSun(Scene& scene, const glm::mat4& transform)
 	: GameObject(scene, transform)

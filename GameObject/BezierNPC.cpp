@@ -4,6 +4,7 @@
 #include "Core/TextureManager.h"
 #include "Core/Globals.h"
 #include "Bomb.h"
+#include "Scene/Scene.h"
 
 BezierNPC::BezierNPC(Scene& scene, const glm::mat4 transform)
     : GameObject(scene, transform)

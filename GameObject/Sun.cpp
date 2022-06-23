@@ -3,6 +3,7 @@
 #include "Core/ShaderManager.h"
 #include "Core/TextureManager.h"
 #include "Core/Utils.h"
+#include "Scene/Scene.h"
 
 static constexpr float vData[] = {
 		-0.5f, -0.5f, 0.f,  0.f, 1.f,

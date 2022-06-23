@@ -10,6 +10,7 @@
 #include "GameObject/TextBillboard.h"
 #include "PathfindingNPC.h"
 #include "RedTrophy.h"
+#include "Scene/Scene.h"
 
 Player::Player(Scene& scene, std::shared_ptr<class Camera> camera)
     : GameObject(scene, glm::mat4(1.f))

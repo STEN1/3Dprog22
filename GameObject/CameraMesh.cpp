@@ -4,6 +4,7 @@
 #include "VisualObject/Mesh.h"
 #include "Core/Globals.h"
 #include "Core/TextureManager.h"
+#include "Scene/Scene.h"
 
 CameraMesh::CameraMesh(Scene& scene)
 	: GameObject(scene)
