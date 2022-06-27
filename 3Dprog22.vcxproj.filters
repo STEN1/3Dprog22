@@ -187,6 +187,9 @@
     <ClCompile Include="GameObject\SolidWall.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\ThreadPool.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject\AnimatedBezier.h">
@@ -510,9 +513,6 @@
     <ClInclude Include="Core\SSBO.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Threadpool\thread_pool.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VisualObject\Skybox.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -553,6 +553,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\SolidWall.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ThreadPool.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -192,6 +192,7 @@
   <ItemGroup>
     <ClCompile Include="Core\SoundManager.cpp" />
     <ClCompile Include="Core\SSBO.cpp" />
+    <ClCompile Include="Core\ThreadPool.cpp" />
     <ClCompile Include="GameObject\AnimatedBezier.cpp" />
     <ClCompile Include="GameObject\BezierNPC.cpp" />
     <ClCompile Include="GameObject\BlueTrophy.cpp" />
@@ -245,7 +246,7 @@
     <ClInclude Include="Core\Globals.h" />
     <ClInclude Include="Core\SoundManager.h" />
     <ClInclude Include="Core\SSBO.h" />
-    <ClInclude Include="Core\Threadpool\thread_pool.hpp" />
+    <ClInclude Include="Core\ThreadPool.h" />
     <ClInclude Include="GameObject\AnimatedBezier.h" />
     <ClInclude Include="GameObject\BezierNPC.h" />
     <ClInclude Include="GameObject\BlueTrophy.h" />

@@ -5,8 +5,8 @@
 #include <memory>
 #include "Core/PointLight.h"
 #include "Core/SoundSource.h"
-#include "Core/Threadpool/thread_pool.hpp"
 #include "Core/Octree.h"
+#include "Core/ThreadPool.h"
 
 class GameObject;
 class Octree;
@@ -69,7 +69,8 @@ private:
 	glm::vec3 m_SunColor;
 	std::vector<std::pair<GameObject*, GameObject*>> FindCollisions();
 	std::vector<std::pair<GameObject*, GameObject*>> FindCollisions2();
-	//std::vector<std::pair<GameObject*, GameObject*>> FindCollisions3();
+	std::vector<std::pair<GameObject*, GameObject*>> FindCollisions3();
+	ThreadPool m_ThreadPool;
 	void ResolveOverlapp(const std::vector<std::pair<GameObject*, GameObject*>>& goVec);
 	void RemoveDestroyedGameObjects();
 	void RenderQuads();

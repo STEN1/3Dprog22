@@ -145,7 +145,7 @@ void Scene::Update(float deltaTime)
 
     //m_octree->ResolveOverlappingGameObjects();
 
-    ResolveOverlapp(FindCollisions2());
+    ResolveOverlapp(FindCollisions3());
 
     Simulate(deltaTime);
 
@@ -415,27 +415,24 @@ std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions2()
     return outVec;
 }
 
-//std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions3()
-//{
-//    std::vector<Octree*> activeLeafs;
-//    m_octree->FindActiveLeafs(activeLeafs);
-//    std::vector<std::vector<std::pair<GameObject*, GameObject*>>> outVectors(activeLeafs.size());
-//    m_ThreadPool.sleep_duration = 0;
-//    m_ThreadPool.paused = false;
-//    for (uint32_t i = 0; i < activeLeafs.size(); i++)
-//    {
-//        m_ThreadPool.push_task(std::bind(&Octree::FindCollisions, activeLeafs[i], std::ref(outVectors[i])));
-//    }
-//    std::vector<std::pair<GameObject*, GameObject*>> outVec;
-//    m_ThreadPool.wait_for_tasks();
-//    m_ThreadPool.paused = true;
-//    m_ThreadPool.sleep_duration = 1000;
-//    for (auto& vec : outVectors)
-//    {
-//        outVec.insert(outVec.end(), vec.begin(), vec.end());
-//    }
-//    return outVec;
-//}
+std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions3()
+{
+    std::vector<Octree*> activeLeafs;
+    m_octree->FindActiveLeafs(activeLeafs);
+    std::vector<std::vector<std::pair<GameObject*, GameObject*>>> outVectors(activeLeafs.size());
+    for (int i = 0; i < activeLeafs.size(); i++)
+    {
+        m_ThreadPool.PushWork(std::bind(&Octree::FindCollisions, activeLeafs[i], std::ref(outVectors[i])));
+    }
+    int a = 1000;
+    m_ThreadPool.WaitUntilFinished();
+    std::vector<std::pair<GameObject*, GameObject*>> outVec;
+    for (auto& vec : outVectors)
+    {
+        outVec.insert(outVec.end(), vec.begin(), vec.end());
+    }
+    return outVec;
+}
 
 void Scene::ResolveOverlapp(const std::vector<std::pair<GameObject*, GameObject*>>& goVec)
 {
