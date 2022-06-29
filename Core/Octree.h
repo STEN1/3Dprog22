@@ -1,6 +1,7 @@
 #pragma once
 #include "PhysicsShapes.h"
 #include <vector>
+#include <mutex>
 
 class GameObject;
 class Octree
@@ -30,6 +31,6 @@ private:
 	std::vector<GameObject*> m_gameObjects;
 	std::vector<Octree*> m_childNodes;
 	AABB m_physicsBox{};
-	uint32_t m_maxObjects{ 20 };
+	uint32_t m_maxObjects{ 200 };
 	float m_minExtent{ 5.f };
 };

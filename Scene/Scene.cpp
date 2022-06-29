@@ -363,32 +363,9 @@ float Scene::GetHeightFromHeightmap(const glm::vec3& pos)
 
 std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions()
 {
-    if (m_octree->IsLeaf())
-    {
-        std::vector<std::pair<GameObject*, GameObject*>> outVec;
-        m_octree->FindCollisions(outVec);
-        return outVec;
-    }
-    else
-    {
-        // Matching number of childnodes.
-        static constexpr uint32_t THREADS = 8;
-        std::vector<std::vector<std::pair<GameObject*, GameObject*>>> outVectors(THREADS);
-        std::vector<std::future<void>> futures(THREADS);
-
-        for (uint32_t i = 0; i < THREADS; i++)
-            futures[i] = std::async(std::launch::async, &Octree::FindCollisions, m_octree->m_childNodes[i], std::ref(outVectors[i]));
-
-        for (auto& fut : futures)
-            fut.get();
-
-        std::vector<std::pair<GameObject*, GameObject*>> outVec;
-        for (auto& vec : outVectors)
-        {
-            outVec.insert(outVec.end(), vec.begin(), vec.end());
-        }
-        return outVec;
-    }
+    std::vector<std::pair<GameObject*, GameObject*>> outVec;
+    m_octree->FindCollisions(outVec);
+    return outVec;
 }
 
 std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions2()
@@ -424,7 +401,6 @@ std::vector<std::pair<GameObject*, GameObject*>> Scene::FindCollisions3()
     {
         m_ThreadPool.PushWork(std::bind(&Octree::FindCollisions, activeLeafs[i], std::ref(outVectors[i])));
     }
-    int a = 1000;
     m_ThreadPool.WaitUntilFinished();
     std::vector<std::pair<GameObject*, GameObject*>> outVec;
     for (auto& vec : outVectors)

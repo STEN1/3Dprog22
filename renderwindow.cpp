@@ -119,7 +119,7 @@ void RenderWindow::init()
         Camera::Projection::Perspective);
     m_debugCamera->SetPosition({ 150.f, 10.f, 150.f });
   
-    LoadScene<EksamenScene>();
+    LoadScene<WoodsScene>();
     auto& lightShader = LoadShader("light");
     auto& landscapeShader = LoadShader("landscape");
     auto& instancedLightShader = LoadShader("instancedlight");

@@ -22,11 +22,13 @@ void ThreadPool::WaitUntilFinished()
 {
 	while (true)
 	{
+		m_WorkQueueMutex.lock();
+		if (m_WorkQueue.empty() && m_ThreadsWorking.load(std::memory_order::memory_order_acquire) == 0)
 		{
-			std::scoped_lock<std::mutex> lock(m_WorkQueueMutex);
-			if (m_WorkQueue.empty() && m_ThreadsWorking == 0)
-				return;
+			m_WorkQueueMutex.unlock();
+			break;
 		}
+		m_WorkQueueMutex.unlock();
 	}
 }
 
@@ -47,13 +49,13 @@ void ThreadPool::Worker()
 			if (m_WorkQueue.empty())
 			{
 				m_WorkQueueMutex.unlock();
-				std::this_thread::sleep_for(std::chrono::microseconds(10));
+				std::this_thread::sleep_for(std::chrono::microseconds(100));
 			}
 			else
 			{
-				m_ThreadsWorking += 1;
+				m_ThreadsWorking.fetch_add(1, std::memory_order::memory_order_release);
 				hasWork = true;
-				f = m_WorkQueue.back();
+				f = std::move(m_WorkQueue.back());
 				m_WorkQueue.pop_back();
 				m_WorkQueueMutex.unlock();
 			}
@@ -61,7 +63,7 @@ void ThreadPool::Worker()
 		if (hasWork)
 		{
 			f();
-			m_ThreadsWorking -= 1;
+			m_ThreadsWorking.fetch_sub(1, std::memory_order::memory_order_release);
 		}
 	}
 }
